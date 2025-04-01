@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="UltimateSprintReport",
+    name="UltimateJiraSprintReport",
     version="0.1.0",
     author="Your Name",
-    author_email="your.email@example.com",
+    author_email="mike@7ft10.com",
     description="A project to generate sprint reports from Jira data.",
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",

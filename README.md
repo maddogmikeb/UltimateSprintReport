@@ -1,7 +1,7 @@
-# Ultimate Sprint Report
+# Ultimate Jira Sprint Report
 
 ## Overview
-The Ultimate Sprint Report is a Python application designed to generate comprehensive reports for Agile sprints using data from Jira. It provides insights into sprint performance, including burndown charts, velocity statistics, and epic statistics.
+The Ultimate Jira Sprint Report is a Python application designed to generate comprehensive reports for Agile sprints using data from Jira. It provides insights into sprint performance, including burndown charts, velocity statistics, and epic statistics.
 
 ## Features
 - Load sprint data from Jira.

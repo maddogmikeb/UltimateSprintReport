@@ -1,5 +1,5 @@
-# This file initializes the ultimate_sprint_report package. 
+# This file initializes the UltimateJiraSprintReport package. 
 
-from UltimateSprintReport import UltimateSprintReport
+from src.main import UltimateJiraSprintReport
 
-__all__ = ["UltimateSprintReport"]  # Define the public API of the package
+__all__ = ["UltimateJiraSprintReport"]  # Define the public API of the package

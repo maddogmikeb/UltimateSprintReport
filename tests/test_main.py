@@ -1,5 +1,5 @@
 import unittest
-from src.UltimateSprintReport import UltimateSprintReport
+from src.main import UltimateSprintReport
 
 class TestUltimateSprintReport(unittest.TestCase):
 

@@ -3,8 +3,15 @@ from tqdm.auto import tqdm
 import os 
 import importlib
 
-class UltimateSprintReport(object):
+class UltimateJiraSprintReport(object):
       
+      # Imported methods
+      from services.jira_service import JiraService
+
+      from utils.utils import calculate_predictability_score_stars, calculate_predictability_score, make_clickable, make_testcase_clickable      
+      from reporter.reporter import show_burndown_chart, show_committed_vs_planned, show_committed_vs_planned_chart, show_burndown_table
+      from utils.http_utils import _parse_url
+
       def __init__(self,	username: str, password: str, jira_scheme_url: str):
          if (jira_scheme_url is None) or (username is None) or (password is None):
             raise ValueError("Jira scheme URL, username and password are required")
@@ -13,12 +20,12 @@ class UltimateSprintReport(object):
          self.PluginFolder = "./plugins"
          self.MainModule = "__init__"
 
-      # Imported methods
-      from .utils import calculate_predictability_score_stars 
+         self.stars = self.calculate_predictability_score_stars(123)
 
       # Some more small functions
       def printHi(self):
         self.progress_bar = tqdm(total=100, desc="Loading Sprint Details", leave=True)
+        
 
       def getPlugins(self):
          plugins = []
@@ -33,3 +40,7 @@ class UltimateSprintReport(object):
 
       def loadPlugin(self, plugin):         
          return importlib.load_module(self.MainModule, *plugin["info"])
+      
+
+report = UltimateJiraSprintReport("username", "password", "url")
+report.show_burndown_table()
