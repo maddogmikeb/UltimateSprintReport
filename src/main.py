@@ -1,46 +1,48 @@
-from atlassian import Jira
-from tqdm.auto import tqdm
-import os 
-import importlib
+"""
+Defines the `UltimateJiraSprintReport` class, which provides functionality
+for generating sprint reports from Jira data. It includes methods for
+interacting with Jira, loading plugins, and utilizing various utility
+functions for report generation.
 
-class UltimateJiraSprintReport(object):
-      
-      # Imported methods
-      from services.jira_service import JiraService
+Classes:
+   - UltimateJiraSprintReport: Main class for generating Jira sprint reports.
 
-      from utils.utils import calculate_predictability_score_stars, calculate_predictability_score, make_clickable, make_testcase_clickable      
-      from reporter.reporter import show_burndown_chart, show_committed_vs_planned, show_committed_vs_planned_chart, show_burndown_table
-      from utils.http_utils import _parse_url
+"""
 
-      def __init__(self,	username: str, password: str, jira_scheme_url: str):
-         if (jira_scheme_url is None) or (username is None) or (password is None):
-            raise ValueError("Jira scheme URL, username and password are required")
-         self.jira = Jira(url=jira_scheme_url, username=username, password=password, cloud=True)
+# pylint: disable=import-outside-toplevel, protected-access
+# pylint: disable=import-error
+# pylint: disable=too-few-public-methods
 
-         self.PluginFolder = "./plugins"
-         self.MainModule = "__init__"
+class UltimateJiraSprintReport:
+    """
+    Main class for generating Jira sprint reports. It provides methods for interacting with Jira,
+    loading plugins, and utilizing utility functions for report generation.
 
-         self.stars = self.calculate_predictability_score_stars(123)
+    Attributes:
+       jira (Jira): Instance of the Jira client for interacting with Jira.
+       PluginFolder (str): Path to the folder containing plugins.
+       MainModule (str): Name of the main module for plugins.
+    """
 
-      # Some more small functions
-      def printHi(self):
-        self.progress_bar = tqdm(total=100, desc="Loading Sprint Details", leave=True)
-        
+    # Import Models
+    from models.data_point import DataPoint
 
-      def getPlugins(self):
-         plugins = []
-         possible_plugins = os.listdir(self.PluginFolder)
-         for i in possible_plugins:
-            location = os.path.join(self.PluginFolder, i)
-            if not os.path.isdir(location) or not self.MainModule + ".py" in os.listdir(location):
-                  continue
-            info = importlib.find_module(self.MainModule, [location])
-            plugins.append({"name": i, "info": info})
-         return plugins
+    # Import Services
+    from services.jira_service import JiraService
 
-      def loadPlugin(self, plugin):         
-         return importlib.load_module(self.MainModule, *plugin["info"])
-      
+    # Import Functions
+    from functions.burndown import load_burndown as burndown
+
+    def __init__(self, username: str, password: str, jira_scheme_url: str):
+        self.jira_service = self.JiraService(username, password, jira_scheme_url)
+        self.jira_service.authenticate()
+
+    def load_burndown(self, rapid_view_id: int, sprint_id: int):        
+        self.burndown(
+            self.jira_service,
+            rapid_view_id,
+            sprint_id,
+        )
 
 report = UltimateJiraSprintReport("username", "password", "url")
-report.show_burndown_table()
+report.load_burndown(21, 123)
