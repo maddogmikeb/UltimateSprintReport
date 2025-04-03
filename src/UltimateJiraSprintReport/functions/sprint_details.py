@@ -10,7 +10,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
-from src.models.data_point import DataPoint
+from src.UltimateJiraSprintReport.models.data_point import DataPoint
 
 def _calculate_estimates(sprint_report, status_category_id) -> tuple[int, int]:
     count = 0

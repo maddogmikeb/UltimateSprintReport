@@ -46,6 +46,6 @@
     ],
     "python.testing.pytestEnabled": false,
     "python.testing.unittestEnabled": true,
-    "python.analysis.extraPaths": ["./src"], 
-    "python.autoComplete.extraPaths": ["./src"]
+    "python.analysis.extraPaths": ["./src", "./src/UltimateJiraSprintReport/"], 
+    "python.autoComplete.extraPaths": ["./src", "./src/UltimateJiraSprintReport/"]
 }

@@ -13,8 +13,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from src.services.jira_service import JiraService
-from src.utils.pandas_utils import make_clickable
+from src.UltimateJiraSprintReport.services.jira_service import JiraService
+from src.UltimateJiraSprintReport.utils.pandas_utils import make_clickable
 
 
 def _find_status_by_id(statuses, status_id):

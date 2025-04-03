@@ -18,8 +18,8 @@ import pandas as pd
 
 from tqdm.auto import tqdm
 
-from src.services.jira_service import JiraService
-from src.utils.http_utils import parse_url
+from src.UltimateJiraSprintReport.services.jira_service import JiraService
+from src.UltimateJiraSprintReport.utils.http_utils import parse_url
 
 
 class UltimateJiraSprintReport:
@@ -46,11 +46,31 @@ class UltimateJiraSprintReport:
             self.test_case_statistics_data_table,
             self.progress_bar,
             self.sprint_velocity_statistics,
-            self.burndown_chart, 
-            self.statuses, 
-            self.status_categories, 
-            self.committed_vs_planned_chart
-        ) = (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+            self.burndown_chart,
+            self.statuses,
+            self.status_categories,
+            self.committed_vs_planned_chart,
+            self.burndown_table,
+            self.sprint_report,
+            self.removed,
+            self.to_do,
+            self.in_progress,
+            self.done,
+            self.completed_outside,
+            self.total_committed,
+            self.sprint_issue_types_statistics,
+            self.sprint_details,
+            self.this_sprint_predictability,
+            self.predictability_data,
+            self.epic_statistics,
+            self.velocity_statistics
+        ) = (None, None, None, None, None,
+             None, None, None, None, None,
+             None, None, None, None, None,
+             None, None, None, None, None,
+             None, None, None, None, None,
+             None, None, None, None
+            )
 
         self.jira_service = JiraService(username, password, jira_scheme_url)
         self.jira_service.authenticate()
@@ -68,11 +88,31 @@ class UltimateJiraSprintReport:
             self.test_case_statistics_data_table,
             self.progress_bar,
             self.sprint_velocity_statistics,
-            self.burndown_chart, 
-            self.statuses, 
-            self.status_categories, 
-            self.committed_vs_planned_chart
-        ) = (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+            self.burndown_chart,
+            self.statuses,
+            self.status_categories,
+            self.committed_vs_planned_chart,
+            self.burndown_table,
+            self.sprint_report,
+            self.removed,
+            self.to_do,
+            self.in_progress,
+            self.done,
+            self.completed_outside,
+            self.total_committed,
+            self.sprint_issue_types_statistics,
+            self.sprint_details,
+            self.this_sprint_predictability,
+            self.predictability_data,
+            self.epic_statistics,
+            self.velocity_statistics
+        ) = (None, None, None, None, None,
+             None, None, None, None, None,
+             None, None, None, None, None,
+             None, None, None, None, None,
+             None, None, None, None, None,
+             None, None, None, None
+            )
 
     def load(self, project: str, board_id: int, sprint_id: int):
         sprint_url = f"{self.jira_service.host}jira/software/c/projects/{project}/boards/{board_id}/reports/sprint-retrospective?sprint={sprint_id}"
@@ -198,8 +238,8 @@ class UltimateJiraSprintReport:
         return self
 
     def _load_sprint_statistics(self):
-        from src.functions.sprint_details import load_sprint_statistics
-        
+        from src.UltimateJiraSprintReport.functions.sprint_details import load_sprint_statistics
+
         (
             self.removed,
             self.to_do,
@@ -213,13 +253,13 @@ class UltimateJiraSprintReport:
         return self
 
     def _load_sprint_issue_types_statistics(self):
-        from src.functions.sprint_details import load_sprint_issue_types_statistics
+        from src.UltimateJiraSprintReport.functions.sprint_details import load_sprint_issue_types_statistics
 
         self.sprint_issue_types_statistics = load_sprint_issue_types_statistics(self.sprint_report)
         return self
 
     def _load_committed_vs_planned_chart(self):
-        from src.functions.sprint_details import load_committed_vs_planned_chart
+        from src.UltimateJiraSprintReport.functions.sprint_details import load_committed_vs_planned_chart
 
         image_base64 = load_committed_vs_planned_chart(
             self.removed,
@@ -235,24 +275,24 @@ class UltimateJiraSprintReport:
         return self
 
     def _calculate_sprint_details(self):
-        from src.functions.sprint_details import calculate_sprint_details
+        from src.UltimateJiraSprintReport.functions.sprint_details import calculate_sprint_details
 
         self.sprint_details = calculate_sprint_details(self.board_config, self.sprint_report)
         return self
 
     def _calculate_sprint_predictability(self):
-        from src.functions.predictability import calculate_predictability
+        from src.UltimateJiraSprintReport.functions.predictability import calculate_predictability
 
         self.this_sprint_predictability, self.predictability_data = calculate_predictability(
             self.velocity_statistics,
             self.sprint_id,
             self.done.points + self.completed_outside.points,
-            self.total_committed[1],            
+            self.total_committed[1]
         )
         return self
 
     def _calculate_epic_statistics(self) -> pd.DataFrame | str:
-        from src.functions.epic_statistics import calculate_epic_statistics
+        from src.UltimateJiraSprintReport.functions.epic_statistics import calculate_epic_statistics
  
         self.epic_statistics = calculate_epic_statistics(
             self.jira_service,
@@ -262,7 +302,7 @@ class UltimateJiraSprintReport:
         return self
 
     def _load_burndown(self) -> pd.DataFrame | str:
-        from src.functions.burndown import load_burndown
+        from src.UltimateJiraSprintReport.functions.burndown import load_burndown
 
         df, image_base64 = load_burndown(
             self.jira_service,
