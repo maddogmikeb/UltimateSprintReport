@@ -1,3 +1,5 @@
+from matplotlib.patches import Patch
+
 class DataPoint:
 
     def __init__(
@@ -16,8 +18,15 @@ class DataPoint:
         self.hatch = hatch
         self.edge_color = edge_color
 
+    def __repr__(self):
+        return str({"name": self.name, "count": self.count, "points": self.points})
+    
     def get_values(self):
         return [self.count, self.points]
 
-    def __repr__(self):
-        return str({"name": self.name, "count": self.count, "points": self.points})
+    def get_Patch(self):
+        return Patch(
+            facecolor=self.color,
+            edgecolor=self.edge_color,
+            label=self.name,
+        ),

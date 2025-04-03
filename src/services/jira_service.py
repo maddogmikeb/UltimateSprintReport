@@ -1,8 +1,6 @@
+# pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
 import json
 from atlassian import Jira
-
-## Just while developing
-# pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
 
 class JiraService:
     def __init__(self, username: str, password: str, host: str):
@@ -31,23 +29,16 @@ class JiraService:
         except: # pylint: disable=bare-except
             return False
 
-    def load_sprint_report(self, project: str, board_id: int, sprint_id: int):
-        sprint_url = (
-            f"{self.host}/jira/software/c/projects/{project}/boards/{board_id}/"
-            f"reports/sprint-retrospective?sprint={sprint_id}"
-        )
-        return self._load_url(sprint_url)
-
-    def _load_url(self, url: str):
+    def get(self, url: str):
         response = self.jira.request(
             absolute=True,
             method="GET",
-            path=url,
+            path=f"{self.host}{url}",
         )
         return response.content
 
-    def get_issue(self, issue_key: str):
-        return self.jira.issue(key=issue_key)
+    def get_issue(self, key: str, fields: str):
+        return self.jira.issue(key=key, fields=fields)
 
     def jql_query(self, jql: str, fields: str):
         return self.jira.jql(
@@ -57,25 +48,46 @@ class JiraService:
 
     def get_scope_change_burndown_chart(self, rapid_view_id: int, sprint_id: int):
         return json.loads(
-            self.jira.request(
-                absolute=True,
-                method="GET",
-                path=(
-                    f"{self.host}/rest/greenhopper/1.0/rapid/charts/"
-                    f"scopechangeburndownchart.json?rapidViewId={rapid_view_id}&"
+            self.get(
+                    f"/rest/greenhopper/1.0/rapid/charts/scopechangeburndownchart.json?"
+                    f"rapidViewId={rapid_view_id}&"
                     f"sprintId={sprint_id}"
-                ),
-            ).content
+                )
         )
 
     def get_board_config(self, rapid_view_id: int):
         return json.loads(
-            self.jira.request(
-                absolute=True,
-                method="GET",
-                path=(
-                    f"{self.host}/rest/greenhopper/1.0/rapidviewconfig/"
-                    f"editmodel.json?rapidViewId={rapid_view_id}"
-                ),
-            ).content
+            self.get(
+                    f"/rest/greenhopper/1.0/rapidviewconfig/editmodel.json?"
+                    f"rapidViewId={rapid_view_id}"
+                )
+        )
+
+    def get_velocity_statistics(self, rapid_view_id: int):
+        return json.loads(
+            self.get(
+                    f"/rest/greenhopper/1.0/rapid/charts/velocity.json/?"
+                    f"rapidViewId={rapid_view_id}"
+                )
+        )
+
+    def get_sprint_report(self, project: str, rapid_view_id: int, sprint_id: int):
+        return json.loads(
+            self.get(
+                f"/jira/software/c/"
+                f"projects/{project}"
+                f"/boards/{rapid_view_id}"
+                f"/reports/sprint-retrospective?"
+                f"sprint={sprint_id}"
+            )
+        )
+
+    def get_status_categories(self):
+        return json.loads(
+            self.jira.get("/rest/api/2/statuscategory")
+        )
+
+    def get_statuses(self):
+        return json.loads(
+            self.jira.get("/rest/api/2/status")
         )

@@ -1,5 +1,51 @@
 {
     "cSpell.words": [
-        "scopechangeburndownchart"
-    ]
+        "apikey",
+        "axhline",
+        "axvline",
+        "burndown",
+        "busday",
+        "chunksize",
+        "cmap",
+        "colormap",
+        "colormaps",
+        "cumsum",
+        "edgecolor",
+        "editmodel",
+        "facecolor",
+        "FDSEWMSR",
+        "fillna",
+        "fontweight",
+        "horizontalalignment",
+        "iloc",
+        "INPROGRESS",
+        "issuelinks",
+        "kanoah",
+        "linestyle",
+        "perc",
+        "popupable",
+        "rapidviewconfig",
+        "resolutiondate",
+        "scopechangeburndownchart",
+        "sprintreport",
+        "testexecutions",
+        "twinx",
+        "vlines",
+        "weekmask",
+        "xticks",
+        "ylabel",
+        "ylim",
+        "yticks"
+    ],
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./tests",
+        "-p",
+        "test*.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    "python.testing.unittestEnabled": true,
+    "python.analysis.extraPaths": ["./src", "./src/services", "./src/utils"], 
+    "python.autoComplete.extraPaths": ["./src", "./src/services", "./src/utils"]
 }

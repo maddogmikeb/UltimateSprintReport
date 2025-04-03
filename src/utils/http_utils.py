@@ -1,18 +1,22 @@
-import re 
+import re
 
-url_regex = r"(https?)://([^/]+)/jira/software/c/projects/([^/]+)/boards/(\d+)/reports/sprint-retrospective\?sprint=(\d+)"
+# pylint: disable=line-too-long
+URL_REGEX = r"(https?)://([^/]+)/jira/software/c/projects/([^/]+)/boards/(\d+)/reports/sprint-retrospective\?sprint=(\d+)"
 
-def _parse_url(self, url):    
-    match = re.search(url_regex, url)
+def parse_url(url):
+    match = re.search(URL_REGEX, url)
     if not match:
-        raise Exception("Invalid URL: " + url)
-    
+        raise ValueError("Invalid URL: " + url)
+
     protocol = match.group(1)
     base_url = match.group(2)
     project = match.group(3)
-    rapidViewId = match.group(4)
-    sprintId = match.group(5)
+    rapid_view_id = match.group(4)
+    sprint_id = match.group(5)
     full_base_url = f"{protocol}://{base_url}"
-    if protocol == None or base_url == None or project == None or rapidViewId == None or sprintId == None:
-        raise Exception("Invalid URL: " + url)
-    return full_base_url, project, rapidViewId, sprintId
+
+    if (protocol is None or base_url is None or project is None or
+        rapid_view_id is None or sprint_id is None):
+        raise ValueError("Invalid URL: " + url)
+
+    return full_base_url, project, rapid_view_id, sprint_id

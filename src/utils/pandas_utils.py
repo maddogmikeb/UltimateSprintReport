@@ -9,7 +9,7 @@ Functions:
 
 import pandas as pd
 
-def make_clickable(self, val, base_url):
+def make_clickable(val: any, base_url: str):
     """
     Converts a value into a clickable HTML link for a given base URL.
 
@@ -26,7 +26,7 @@ def make_clickable(self, val, base_url):
     else:
         return val
 
-def format_timestamp(self, timestamp):
+def format_timestamp(timestamp):
     """
     Converts a timestamp in milliseconds to a pandas datetime object.
 
