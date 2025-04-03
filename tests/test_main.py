@@ -11,7 +11,7 @@ import pandas as pd
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
 
-from src.UltimateJiraSprintReport.UltimateJiraSprintReport import UltimateJiraSprintReport
+from UltimateJiraSprintReport.UltimateJiraSprintReport import UltimateJiraSprintReport
 
 class TestUltimateJiraSprintReport(unittest.TestCase):
 

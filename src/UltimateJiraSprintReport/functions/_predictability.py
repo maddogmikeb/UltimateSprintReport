@@ -4,7 +4,7 @@
 
 from collections.abc import Callable
 
-from src.UltimateJiraSprintReport.utils.predictability_utils import calculate_predictability_score
+from utils._predictability_utils import calculate_predictability_score
 
 
 def calculate_predictability(
