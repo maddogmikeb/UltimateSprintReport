@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "ultimate_sprint_report"
+name = "ultimate_jira_sprint_report"
 version = "0.1.0"
 description = "A library for generating sprint reports from Jira data."
-authors = ["Your Name <your.email@example.com>"]
+authors = ["mike@7ft10.com"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/yourusername/ultimate_sprint_report"
-repository = "https://github.com/yourusername/ultimate_sprint_report"
+homepage = "https://github.com/maddogmike/ultimate_sprint_report"
+repository = "https://github.com/maddogmike/ultimate_sprint_report"
 keywords = ["jira", "sprint", "report", "analytics"]
 
 [tool.poetry.dependencies]
@@ -18,5 +18,5 @@ atlassian-python-api = "^3.21"
 tqdm = "^4.62"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
