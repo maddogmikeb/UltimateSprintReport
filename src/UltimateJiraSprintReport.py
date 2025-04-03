@@ -115,7 +115,7 @@ class UltimateJiraSprintReport:
              None, None, None, None
             )
 
-    from src.UltimateJiraSprintReport.reporter.reporter import (
+    from reporter.reporter import (
         show_burndown_chart,
         show_burndown_table,
         show_committed_vs_planned_chart,
