@@ -18,6 +18,7 @@ src/UltimateJiraSprintReport/plugins/zephyr_scale/services/__init__.py
 src/UltimateJiraSprintReport/plugins/zephyr_scale/services/zephyr_scale_api.py
 src/UltimateJiraSprintReport/plugins/zephyr_scale/utils/__init__.py
 src/UltimateJiraSprintReport/plugins/zephyr_scale/utils/utils.py
+src/UltimateJiraSprintReport/reporter/report1.py
 src/UltimateJiraSprintReport/reporter/report2.py
 src/UltimateJiraSprintReport/reporter/reporter.py
 src/UltimateJiraSprintReport/services/jira_service.py

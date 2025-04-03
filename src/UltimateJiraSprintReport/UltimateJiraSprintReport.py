@@ -115,6 +115,21 @@ class UltimateJiraSprintReport:
              None, None, None, None
             )
 
+    from src.UltimateJiraSprintReport.reporter.reporter import (
+        show_burndown_chart,
+        show_burndown_table,
+        show_committed_vs_planned_chart,
+        show_epic_statistics,
+        show_predictability,
+        show_report,
+        show_sprint_predictability,
+        show_committed_vs_planned,
+        show_login_details,
+        show_sprint_details,
+        show_sprint_issue_types_statistics,
+        show_sprint_test_case_statistics
+    )
+
     def load(self, project: str, board_id: int, sprint_id: int):
         sprint_url = f"{self.jira_service.host}jira/software/c/projects/{project}/boards/{board_id}/reports/sprint-retrospective?sprint={sprint_id}"
         return self.load_url(sprint_url)

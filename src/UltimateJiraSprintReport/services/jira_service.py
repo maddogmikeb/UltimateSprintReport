@@ -31,10 +31,13 @@ class JiraService:
                 "Jira instance is not initialized. Call authenticate() first."
             )
         try:
-            self.jira.myself()
+            self.myself()
             return True
         except:  # pylint: disable=bare-except
             return False
+
+    def myself(self):
+        return self.jira.myself()
 
     def get(self, url: str):
         response = self.jira.request(
