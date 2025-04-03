@@ -1,0 +1,9 @@
+README.md
+pyproject.toml
+setup.py
+src/UltimateJiraSprintReport.egg-info/PKG-INFO
+src/UltimateJiraSprintReport.egg-info/SOURCES.txt
+src/UltimateJiraSprintReport.egg-info/dependency_links.txt
+src/UltimateJiraSprintReport.egg-info/requires.txt
+src/UltimateJiraSprintReport.egg-info/top_level.txt
+tests/test_main.py
