@@ -1,6 +1,8 @@
 # pylint: disable=protected-access, import-error
 # pylint: disable=line-too-long, too-many-arguments
 # pylint: disable=missing-module-docstring, missing-function-docstring
+# pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
+# pylint: disable=too-many-positional-arguments, too-many-arguments
 
 import io
 import base64

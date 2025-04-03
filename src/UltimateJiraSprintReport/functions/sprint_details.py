@@ -1,4 +1,6 @@
 # pylint: disable=missing-module-docstring, missing-function-docstring, line-too-long
+# pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
+# pylint: disable=too-many-positional-arguments, too-many-arguments
 
 import base64
 import io
@@ -83,7 +85,7 @@ def load_sprint_statistics(sprint_report, sprint_velocity_statistics, status_cat
         .get("value", 0)
     )
 
-    if removed_points == 0 or removed_points == -0:
+    if removed_points in (0, -0):
         removed_points = 0
 
     removed = DataPoint(
@@ -386,11 +388,11 @@ def load_committed_vs_planned_chart(removed: DataPoint, done: DataPoint, complet
 
     legend_elements = [
         Line2D([0], [0], color="#8590a2", lw=2, label="Committed"),
-        to_do.get_Patch(),
-        in_progress.get_Patch(),
-        done.get_Patch(),
-        completed_outside.get_Patch(),
-        removed.get_Patch(),
+        to_do.get_patch(),
+        in_progress.get_patch(),
+        done.get_patch(),
+        completed_outside.get_patch(),
+        removed.get_patch(),
     ]
 
     ax1.legend(handles=legend_elements, bbox_to_anchor=(1.15, 1), loc="upper left")

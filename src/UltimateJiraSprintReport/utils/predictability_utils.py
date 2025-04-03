@@ -1,3 +1,6 @@
+# pylint: disable=missing-module-docstring, missing-function-docstring
+# pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
+# pylint: disable=too-many-positional-arguments, too-many-arguments
 """
 This module provides utility functions for calculating predictability scores and ratings.
 
@@ -5,8 +8,6 @@ Functions:
     - calculate_predictability_score: Calculates the predictability score and star rating.
     - calculate_predictability_score_stars: Converts a predictability score to a star rating.
 """
-
-# pylint: disable=unused-argument
 
 def calculate_predictability_score(estimated_points, completed_points):
     """
@@ -19,7 +20,8 @@ def calculate_predictability_score(estimated_points, completed_points):
 
     Returns:
         tuple: A tuple containing:
-            - predictability_score (float or None): The calculated predictability score, or None if estimated_points is 0.
+            - predictability_score (float or None): The calculated predictability score, 
+                or None if estimated_points is 0.
             - stars (str): The star rating corresponding to the predictability score.
     """
     if estimated_points == 0:
@@ -41,13 +43,12 @@ def calculate_predictability_score_stars(predictability_score: float):
     """
     if predictability_score <= 0.2:
         return "★★★★★"
-    elif predictability_score <= 0.4:
+    if predictability_score <= 0.4:
         return "★★★★"
-    elif predictability_score <= 0.6:
+    if predictability_score <= 0.6:
         return "★★★"
-    elif predictability_score <= 0.8:
+    if predictability_score <= 0.8:
         return "★★"
-    elif predictability_score <= 1.0:
+    if predictability_score <= 1.0:
         return "★"
-    else:
-        return "☆"
+    return "☆"

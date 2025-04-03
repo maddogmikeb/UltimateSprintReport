@@ -1,4 +1,6 @@
 # pylint: disable=missing-module-docstring, missing-function-docstring
+# pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
+# pylint: disable=too-many-positional-arguments, too-many-arguments
 
 from collections.abc import Callable
 
@@ -9,9 +11,9 @@ def calculate_epic_statistics(
     jira_service: JiraService,
     board_config,
     sprint_report,
-    on_start: Callable[[float, str], None] = None,
-    on_iteration: Callable[[str], None] = None,
-    on_finish: Callable[[str], None] = None,
+    on_start: Callable[[float, str], None]=None,
+    on_iteration: Callable[[str], None]=None,
+    on_finish: Callable[[str], None]=None,
 ):
 
     if on_start is None:
@@ -64,32 +66,32 @@ def calculate_epic_statistics(
                 done_cnt += 1
 
         epic_stats.append(
-            dict(
-                parent_key=(
+            {
+                "parent_key": (
                     epic["fields"]["parent"]["key"]
                     if "parent" in epic["fields"] and epic["fields"]["parent"]
                     else None
                 ),
-                parent_summary=(
+                "parent_summary":(
                     epic["fields"]["parent"]["fields"]["summary"]
                     if "parent" in epic["fields"] and epic["fields"]["parent"]
                     else None
                 ),
-                key=epic["key"],
-                summary=epic["fields"]["summary"],
-                status_category=(
+                "key": epic["key"],
+                "summary": epic["fields"]["summary"],
+                "status_category":(
                     epic["fields"]["status"]["statusCategory"]["name"]
                     if epic["fields"]["status"]["statusCategory"]
                     and "name" in epic["fields"]["status"]["statusCategory"]
                     else "To Do"
                 ),
-                done_pts=done_pts,
-                total_pts=total_pts,
-                completed_pts_perc=done_pts / total_pts * 100,
-                done_cnt=done_cnt,
-                total_cnt=total_cnt,
-                completed_cnt_perc=done_cnt / total_cnt * 100,
-            )
+                "done_pts": done_pts,
+                "total_pts": total_pts,
+                "completed_pts_perc": done_pts / total_pts * 100,
+                "done_cnt": done_cnt,
+                "total_cnt": total_cnt,
+                "completed_cnt_perc": done_cnt / total_cnt * 100,
+            }
         )
 
     return epic_stats

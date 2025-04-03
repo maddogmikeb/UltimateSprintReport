@@ -1,3 +1,7 @@
+# pylint: disable=missing-module-docstring, missing-function-docstring
+# pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
+# pylint: disable=too-many-positional-arguments, too-many-arguments
+
 """
 This module provides utility functions for working with pandas DataFrames and formatting data.
 
@@ -5,7 +9,6 @@ Functions:
     - make_clickable: Converts a value into a clickable HTML link for a given base URL.
     - format_timestamp: Converts a timestamp in milliseconds to a pandas datetime object.
 """
-# pylint: disable=unused-argument
 
 import pandas as pd
 
@@ -21,10 +24,10 @@ def make_clickable(val: any, base_url: str):
     Returns:
         str: An HTML string containing the clickable link, or the original value if empty.
     """
-    if val != "":
-        return f'<a target="_blank" href="{base_url}/browse/{val}">{val}</a>'
-    else:
+    if val == "":
         return val
+
+    return f'<a target="_blank" href="{base_url}/browse/{val}">{val}</a>'
 
 def format_timestamp(timestamp):
     """

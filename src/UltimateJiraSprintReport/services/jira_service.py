@@ -1,4 +1,5 @@
 # pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
+
 import json
 from atlassian import Jira
 
@@ -77,14 +78,14 @@ class JiraService:
             )
         )
 
-    def get_sprint_report(self, project: str, rapid_view_id: int, sprint_id: int):
+    def get_sprint_report(self, rapid_view_id: int, sprint_id: int):
         return  json.loads(
             self.get(
                 f"/rest/greenhopper/latest/rapid/charts/sprintreport?"
                 f"rapidViewId={rapid_view_id}&"
                 f"sprintId={sprint_id}"
             )
-        ) 
+        )
 
     def get_status_categories(self):
         return self.jira.get("rest/api/2/statuscategory")

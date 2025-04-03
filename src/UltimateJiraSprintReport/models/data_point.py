@@ -1,3 +1,7 @@
+# pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
+# pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
+# pylint: disable=too-many-positional-arguments, too-many-arguments
+
 from matplotlib.patches import Patch
 
 class DataPoint:
@@ -20,11 +24,11 @@ class DataPoint:
 
     def __repr__(self):
         return str({"name": self.name, "count": self.count, "points": self.points})
-    
+
     def get_values(self):
         return [self.count, self.points]
 
-    def get_Patch(self):
+    def get_patch(self):
         return Patch(
             facecolor=self.color,
             edgecolor=self.edge_color,

@@ -1,4 +1,6 @@
 # pylint: disable=missing-module-docstring, missing-function-docstring
+# pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
+# pylint: disable=too-many-positional-arguments, too-many-arguments
 
 from collections.abc import Callable
 

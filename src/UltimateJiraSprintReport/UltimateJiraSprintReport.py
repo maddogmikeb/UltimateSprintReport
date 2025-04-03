@@ -13,6 +13,7 @@ Classes:
 # pylint: disable=import-error, unused-import
 # pylint: disable=too-few-public-methods, line-too-long
 # pylint: disable=missing-function-docstring, invalid-name
+# pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
 
 import pandas as pd
 
@@ -212,7 +213,7 @@ class UltimateJiraSprintReport:
 
     def _load_sprint_report(self):
         self.sprint_report = self.jira_service.get_sprint_report(
-            self.project, self.rapid_view_id, self.sprint_id
+            self.rapid_view_id, self.sprint_id
         )
         return self
 
@@ -293,7 +294,7 @@ class UltimateJiraSprintReport:
 
     def _calculate_epic_statistics(self) -> pd.DataFrame | str:
         from src.UltimateJiraSprintReport.functions.epic_statistics import calculate_epic_statistics
- 
+
         self.epic_statistics = calculate_epic_statistics(
             self.jira_service,
             self.board_config,

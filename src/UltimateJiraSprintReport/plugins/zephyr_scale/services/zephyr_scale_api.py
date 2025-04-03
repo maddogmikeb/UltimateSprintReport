@@ -1,19 +1,28 @@
-import json 
+# pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
+# pylint: disable=line-too-long
+# pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
+# pylint: disable=too-many-positional-arguments, too-many-arguments
+# pylint: disable=unnecessary-lambda, protected-access, consider-using-f-string, wrong-import-order
+
+import json
 import requests
 
-from tqdm.auto import tqdm
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import pandas as pd
+import numpy as np
+from tqdm.auto import tqdm
 
-zephyr_api_url = "https://api.zephyrscale.smartbear.com/v2"
+
+ZEPHYR_API_URL = "https://api.zephyrscale.smartbear.com/v2"
+
 
 def load_sprint_zephyr_test_cast_statistics(self, zephyr_api):
-    if zephyr_api == None:
-        raise Exception("Zephyr Scale API Key not set")
-
-    if self.sprintId == None:
-        raise Exception("Sprint ID not set")
-    if self.base_url == None:
-        raise Exception("Base URL not set")
+    if zephyr_api is None:
+        raise ValueError("Zephyr Scale API Key not set")
+    if self.sprintId is None:
+        raise ValueError("Sprint ID not set")
+    if self.base_url is None:
+        raise ValueError("Base URL not set")
 
     def flatten(xss):
         return [x for xs in xss for x in xs]
@@ -26,14 +35,14 @@ def load_sprint_zephyr_test_cast_statistics(self, zephyr_api):
 
     def process_issue(issue, progress_bar):
         sprint_test_results = []
-        issue_testcases = json.loads(requests.get(f"{zephyr_api_url}/issuelinks/{issue['key']}/testcases", headers=headers).text)
+        issue_testcases = json.loads(requests.get(f"{ZEPHYR_API_URL}/issuelinks/{issue['key']}/testcases", headers=headers, timeout=5).text)
         for tc in issue_testcases:
-            testcase = json.loads(requests.get(tc['self'], headers=headers).text)
-            status = status_cache.get(testcase['status']['self']) or json.loads(requests.get(testcase['status']['self'], headers=headers).text)
+            testcase = json.loads(requests.get(tc['self'], headers=headers, timeout=5).text)
+            status = status_cache.get(testcase['status']['self']) or json.loads(requests.get(testcase['status']['self'], headers=headers, timeout=5).text)
             status_cache[testcase['status']['self']] = status
-            executions = json.loads(requests.get(f"{zephyr_api_url}/testexecutions?testCase={testcase['key']}&onlyLastExecutions=true", headers=headers).text)
+            executions = json.loads(requests.get(f"{ZEPHYR_API_URL}/testexecutions?testCase={testcase['key']}&onlyLastExecutions=true", headers=headers, timeout=5).text)
             if executions['values']:
-                execution_status = executions_cache.get(executions['values'][0]['testExecutionStatus']['self']) or json.loads(requests.get(executions['values'][0]['testExecutionStatus']['self'], headers=headers).text)
+                execution_status = executions_cache.get(executions['values'][0]['testExecutionStatus']['self']) or json.loads(requests.get(executions['values'][0]['testExecutionStatus']['self'], headers=headers, timeout=5).text)
                 executions_cache[executions['values'][0]['testExecutionStatus']['self']] = execution_status
             else:
                 execution_status = {'name': 'Not Executed'}
@@ -67,7 +76,7 @@ def load_sprint_zephyr_test_cast_statistics(self, zephyr_api):
         'Execution Status': lambda x: (x == 'Pass').sum() / len(x)
     })
     df = df.sort_values(by=['Execution Status'], ascending=False).reset_index()
-    df.loc['Total']= df.mean(numeric_only=True, axis=0)
+    df.loc['Total'] = df.mean(numeric_only=True, axis=0)
     df.loc['Total'] = df.loc['Total'].replace(np.nan, '', regex=True)
 
     df['Status'] = df['Status'].map('{:.1%}'.format)

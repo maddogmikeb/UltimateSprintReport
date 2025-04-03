@@ -1,4 +1,4 @@
-# This file initializes the UltimateJiraSprintReport package. 
+# pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
 
 from src.UltimateJiraSprintReport.UltimateJiraSprintReport import UltimateJiraSprintReport
 

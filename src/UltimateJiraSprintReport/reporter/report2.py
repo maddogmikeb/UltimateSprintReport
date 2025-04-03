@@ -1,3 +1,5 @@
+# pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring, protected-access
+
 """
 This module contains functions for generating various sections of an HTML sprint report.
 """
@@ -98,10 +100,11 @@ def show_sprint_predictability(self):
         <h2>Rating: ${stars}</h2>
         """
     )
-    if self.this_sprint_predictability:
-        return template.substitute(stars=self.this_sprint_predictability["stars"])
-    else:
+
+    if not self.this_sprint_predictability:
         return ""
+
+    return template.substitute(stars=self.this_sprint_predictability["stars"])
 
 
 def show_epic_statistics(self):
