@@ -1,32 +1,85 @@
 # Ultimate Jira Sprint Report
 
 ## Overview
-The Ultimate Jira Sprint Report is a Python application designed to generate comprehensive reports for Agile sprints using data from Jira. It provides insights into sprint performance, including burndown charts, velocity statistics, and epic statistics.
+
+The **Ultimate Jira Sprint Report** is a Python library designed to generate detailed Agile sprint reports using data from Jira. It provides actionable insights into sprint performance, including burndown charts, velocity metrics, and epic-level statistics.
 
 ## Features
-- Load sprint data from Jira.
-- Generate burndown charts and other visualizations.
-- Calculate sprint predictability and velocity statistics.
-- Provide detailed statistics on epics and issues.
+
+- **Sprint Data Loading**: Fetch sprint data directly from Jira.
+- **Burndown Charts**: Generate visualizations to track sprint progress.
+- **Velocity Metrics**: Analyze sprint predictability and team velocity.
+- **Epic and Issue Statistics**: Gain insights into epic-level and issue-level performance.
 
 ## Installation
-To install the required dependencies, run the following command:
 
-```
-pip install -r requirements.txt
-```
+To install the library, follow these steps:
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/maddogmikeb/UltimateJiraSprintReport.git
+   cd UltimateJiraSprintReport
+   ```
+
+2. Install the library and its dependencies:
+
+   ```bash
+   pip install .
+   ```
+
+Alternatively, you can install the dependencies manually:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ## Usage
-To run the application, execute the following command:
 
+To use the library, import it into your Python project and initialize it with your Jira credentials:
+
+```python
+from UltimateJiraSprintReport import UltimateJiraSprintReport
+
+# Initialize the report generator
+report = UltimateJiraSprintReport(username="your_username", 
+                                   password="your_api_key", 
+                                   host="your_jira_host")
+
+# Load sprint data
+report.load(project="PROJECT_KEY", board_id=123, sprint_id=456)
+
+# Access generated reports
+print(report.burndown_chart)  # Path to the burndown chart
+print(report.burndown_table)  # Pandas DataFrame with sprint data
 ```
+
+## Example
+
+To run the application directly, execute the following command:
+
+```bash
 python src/main.py
 ```
 
-Make sure to provide your Jira credentials and the necessary parameters for loading the sprint data.
+Make sure to provide your Jira credentials and the necessary parameters for loading sprint data.
 
 ## Contributing
-Contributions are welcome! Please feel free to submit a pull request or open an issue for any enhancements or bug fixes.
+
+Contributions are welcome! If you'd like to contribute:
+
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature-name`).
+3. Commit your changes (`git commit -m "Add feature"`).
+4. Push to your branch (`git push origin feature-name`).
+5. Open a pull request.
+
+Feel free to open an issue for bug reports or feature requests.
 
 ## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Support
+
+If you encounter any issues or have questions, please open an issue on the [GitHub repository](https://github.com/maddogmikeb/UltimateJiraSprintReport).

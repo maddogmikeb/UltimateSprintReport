@@ -13,7 +13,7 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))
 
 from UltimateJiraSprintReport import UltimateJiraSprintReport
 
-class TestUltimateSprintReport(unittest.TestCase):
+class TestUltimateJiraSprintReport(unittest.TestCase):
 
     def setUp(self):
         self.username = os.getenv("ATLASSIAN_USERNAME")

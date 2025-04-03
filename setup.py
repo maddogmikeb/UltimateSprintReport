@@ -8,7 +8,7 @@ setup(
     description="A project to generate sprint reports from Jira data.",
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/maddogmikeb/UltimateSprintReport",
+    url="https://github.com/maddogmikeb/UltimateJiraSprintReport",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=[

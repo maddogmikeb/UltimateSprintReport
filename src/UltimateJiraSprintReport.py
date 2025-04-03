@@ -83,7 +83,7 @@ class UltimateJiraSprintReport:
         Load the sprint report data from the given URL.
 
         :param sprint_report_url: The URL of the sprint report.
-        :return: The UltimateSprintReport instance.
+        :return: The UltimateJiraSprintReport instance.
         """
 
         self.progress_bar = tqdm(total=100, desc="Loading Sprint Details", leave=True)
