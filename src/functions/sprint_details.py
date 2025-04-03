@@ -10,13 +10,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
-from models.data_point import DataPoint
+from src.models.data_point import DataPoint
 
 def _calculate_estimates(sprint_report, status_category_id) -> tuple[int, int]:
     count = 0
     estimate = 0
 
-    if not sprint_report:
+    if not sprint_report or len(sprint_report) == 0:
         raise ValueError("Sprint Report not loaded")
 
     for issue in sprint_report["contents"]["issuesNotCompletedInCurrentSprint"]:
@@ -387,7 +387,7 @@ def load_committed_vs_planned_chart(removed: DataPoint, done: DataPoint, complet
     legend_elements = [
         Line2D([0], [0], color="#8590a2", lw=2, label="Committed"),
         to_do.get_Patch(),
-        in_progress.color.get_Patch(),
+        in_progress.get_Patch(),
         done.get_Patch(),
         completed_outside.get_Patch(),
         removed.get_Patch(),

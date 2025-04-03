@@ -2,7 +2,7 @@
 
 from collections.abc import Callable
 
-from utils.predictability_utils import calculate_predictability_score
+from src.utils.predictability_utils import calculate_predictability_score
 
 
 def calculate_predictability(

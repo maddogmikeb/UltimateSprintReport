@@ -2,7 +2,7 @@
 
 from collections.abc import Callable
 
-from services.jira_service import JiraService
+from src.services.jira_service import JiraService
 
 
 def calculate_epic_statistics(

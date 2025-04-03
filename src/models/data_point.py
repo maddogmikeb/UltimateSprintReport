@@ -29,4 +29,4 @@ class DataPoint:
             facecolor=self.color,
             edgecolor=self.edge_color,
             label=self.name,
-        ),
+        )

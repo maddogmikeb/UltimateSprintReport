@@ -18,8 +18,8 @@ import pandas as pd
 
 from tqdm.auto import tqdm
 
-from services.jira_service import JiraService
-from utils.http_utils import parse_url
+from src.services.jira_service import JiraService
+from src.utils.http_utils import parse_url
 
 
 class UltimateJiraSprintReport:
@@ -198,8 +198,8 @@ class UltimateJiraSprintReport:
         return self
 
     def _load_sprint_statistics(self):
-        from functions.sprint_details import load_sprint_statistics
-
+        from src.functions.sprint_details import load_sprint_statistics
+        
         (
             self.removed,
             self.to_do,
@@ -213,13 +213,13 @@ class UltimateJiraSprintReport:
         return self
 
     def _load_sprint_issue_types_statistics(self):
-        from functions.sprint_details import load_sprint_issue_types_statistics
+        from src.functions.sprint_details import load_sprint_issue_types_statistics
 
         self.sprint_issue_types_statistics = load_sprint_issue_types_statistics(self.sprint_report)
         return self
 
     def _load_committed_vs_planned_chart(self):
-        from functions.sprint_details import load_committed_vs_planned_chart
+        from src.functions.sprint_details import load_committed_vs_planned_chart
 
         image_base64 = load_committed_vs_planned_chart(
             self.removed,
@@ -235,35 +235,34 @@ class UltimateJiraSprintReport:
         return self
 
     def _calculate_sprint_details(self):
-        from functions.sprint_details import calculate_sprint_details
+        from src.functions.sprint_details import calculate_sprint_details
 
         self.sprint_details = calculate_sprint_details(self.board_config, self.sprint_report)
         return self
 
     def _calculate_sprint_predictability(self):
-        from functions.predictability import calculate_predictability
+        from src.functions.predictability import calculate_predictability
 
         self.this_sprint_predictability, self.predictability_data = calculate_predictability(
             self.velocity_statistics,
-            self.sprintId,
+            self.sprint_id,
             self.done.points + self.completed_outside.points,
             self.total_committed[1],            
         )
         return self
 
     def _calculate_epic_statistics(self) -> pd.DataFrame | str:
-        from functions.epic_statistics import calculate_epic_statistics
-
+        from src.functions.epic_statistics import calculate_epic_statistics
+ 
         self.epic_statistics = calculate_epic_statistics(
             self.jira_service,
-            self.project,
-            self.rapid_view_id,
-            self.sprint_id,
+            self.board_config,
+            self.sprint_report
         )
         return self
 
     def _load_burndown(self) -> pd.DataFrame | str:
-        from functions.burndown import load_burndown
+        from src.functions.burndown import load_burndown
 
         df, image_base64 = load_burndown(
             self.jira_service,
