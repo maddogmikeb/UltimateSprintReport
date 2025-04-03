@@ -22,7 +22,7 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
         self.report = UltimateJiraSprintReport(self.username, self.password, self.host)
 
     def test_initialization(self):
-        self.assertIsInstance(self.report, UltimateJiraSprintReport) 
+        self.assertIsInstance(self.report, UltimateJiraSprintReport)
 
     def test_load(self):
         project = 'FDSEWMSR'
