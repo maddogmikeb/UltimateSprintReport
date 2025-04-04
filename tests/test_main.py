@@ -37,7 +37,6 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
         self.assertIsInstance(self.report.burndown_table, pd.DataFrame)
         self.assertIsInstance(self.report.burndown_chart, str)
 
-    @unittest.skip
     def test_show_report(self):
         project = 'FDSEWMSR'
         board_id = 401

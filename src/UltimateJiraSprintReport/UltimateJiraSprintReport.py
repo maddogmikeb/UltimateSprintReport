@@ -161,12 +161,12 @@ class UltimateJiraSprintReport:
             self.progress_bar.refresh()
 
         def on_iteration(text):
-            self.progress_bar.update(1)
+            #self.progress_bar.update(1)
             self.progress_bar.set_postfix_str(text)
             self.progress_bar.refresh()
 
         def on_finish(text):
-            self.progress_bar.n = 100
+            #self.progress_bar.n = 100
             self.progress_bar.set_postfix_str(text)
             self.progress_bar.refresh()
 
@@ -255,7 +255,7 @@ class UltimateJiraSprintReport:
             on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
             on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
         ):
-        on_start("Loading Statuses")
+        on_start(None, "Loading Statuses")
         on_iteration("Loading Status Categories")
 
         self.status_categories = self.jira_service.get_status_categories()
@@ -313,7 +313,7 @@ class UltimateJiraSprintReport:
             on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
             on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
         ):
-        on_start("Loading Board Config")
+        on_start(None, "Loading Board Config")
 
         self.board_config = self.jira_service.get_board_config(self.rapid_view_id)
 
