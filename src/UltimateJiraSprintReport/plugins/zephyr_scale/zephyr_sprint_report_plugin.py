@@ -51,6 +51,8 @@ class ZephyrSprintReportPlugin(Plugin):
 
         self.test_case_statistics_data_table = self.process_issues(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
 
+        self.progress_bar.n = 100
+        self.progress_bar.refresh()
         self.progress_bar.set_postfix_str("Completed")
         self.progress_bar.close()
 
