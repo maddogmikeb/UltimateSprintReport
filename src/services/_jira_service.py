@@ -6,7 +6,9 @@ from atlassian import Jira
 
 class JiraService:
     def __init__(self, username: str, password: str, host: str):
-        if (host is None) or (username is None) or (password is None):
+        if ((host is None or len(host) <= 5) or
+            (username is None  or len(username) <= 2) or
+            (password is None or len(password) <= 2)):
             raise ValueError("Jira scheme URL, username and password are required")
 
         if host[-1] != "/":
@@ -24,6 +26,7 @@ class JiraService:
             password=self.password,
             cloud=True,
         )
+        return self
 
     def is_connected(self):
         if self.jira is None:
