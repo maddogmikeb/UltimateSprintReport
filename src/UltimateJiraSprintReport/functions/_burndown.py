@@ -462,5 +462,5 @@ def load_burndown(
 
     return (
         df,
-        f'<img id="burndown_chart" class="popupable" src="data:image/png;base64,{image_base64}" alt="Burndown Chart"/>',
+        image_base64
     )
