@@ -32,8 +32,8 @@ class TestPlugin(unittest.TestCase):
 
     def test_show_report(self):
         project = 'FDSEWMSR'
-        board_id = 401
-        sprint_id = 953
+        board_id = 364
+        sprint_id = 946
         self.report.load(project, board_id, sprint_id)
 
         zephyr_plugin = self.report.load_plugin("zephyr_scale", zephyr_api=self.zephyr_scale_api_key)

@@ -86,6 +86,10 @@ class ZephyrSprintReportPlugin(Plugin):
         on_iteration("Completed")
 
         processed_issues = flatten(processed_issues)
+        if len(processed_issues) == 0:
+            # empty data frame - no tests
+            return pd.DataFrame({'Issue Key' : [], 'Test Case' : [], 'Status': [], 'Execution Status': []})
+
         df = pd.DataFrame(processed_issues)
         df["Issue Key"] = df["Issue Key"].apply(lambda x: make_clickable(x, self.base_url))
         df["Test Case"] = df["Test Case"].apply(lambda x: make_testcase_clickable(x, self.base_url, self.project))
