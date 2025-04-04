@@ -6,7 +6,10 @@ from atlassian import Jira
 
 class JiraService:
 
-    def __init__(self, username: str, password: str, host: str):
+    def __init__(self, username: str, password: str, host: str, cache_results: bool = True):
+        self.cache_results = cache_results
+        self.cache = {}
+
         if ((host is None or len(host) <= 5) or
             (username is None  or len(username) <= 2) or
             (password is None or len(password) <= 2)):
@@ -19,6 +22,9 @@ class JiraService:
         self.password = password
         self.host = host
         self.jira = None  # Placeholder for Jira instance
+
+    def clear_cache(self):
+        self.cache = {}
 
     def _get(self, url: str):
         response = self.jira.request(
@@ -103,3 +109,10 @@ class JiraService:
         return json.loads(
             self._get("rest/api/2/status")
         )
+
+    def get_sprint_issues(self, sprint_id: int):
+        return json.loads(
+            self._get(
+                f"/rest/agile/1.0/sprint/{sprint_id}/issue"
+            )
+        )['issues']

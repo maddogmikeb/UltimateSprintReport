@@ -1,6 +1,6 @@
 # pylint: disable=protected-access, wrong-import-position, missing-class-docstring
 # pylint: disable=missing-function-docstring, missing-module-docstring
-# pylint: disable=import-error, import-outside-toplevel
+# pylint: disable=import-error, import-outside-toplevel, line-too-long
 # pylint: disable=too-few-public-methods, too-many-arguments
 
 import os
@@ -10,41 +10,42 @@ import unittest
 import pandas as pd
 
 from UltimateJiraSprintReport.UltimateJiraSprintReport import UltimateJiraSprintReport
+from UltimateJiraSprintReport.plugins.plugin_register import get_plugin
+from UltimateJiraSprintReport.plugins.zephyr_scale.zephyr_sprint_report_plugin import ZephyrSprintReportPlugin
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 SRC_DIR = os.path.join(os.path.dirname(SCRIPT_DIR), "src")
 sys.path.append(SRC_DIR)
 
 
-class TestUltimateJiraSprintReport(unittest.TestCase):
+class TestPlugin(unittest.TestCase):
 
     def setUp(self):
         self.username = os.getenv("ATLASSIAN_USERNAME")
         self.password = os.getenv("ATLASSIAN_APIKEY")
         self.host = os.getenv("ATLASSIAN_HOST")
+        self.zephyr_scale_api_key = os.getenv("ZEPHYR_SCALE_APIKEY")
         self.report = UltimateJiraSprintReport(self.username, self.password, self.host)
 
     def test_initialization(self):
         self.assertIsInstance(self.report, UltimateJiraSprintReport)
         print(self.report.show_login_details())
 
-    @unittest.skip
-    def test_load(self):
-        project = 'FDSEWMSR'
-        board_id = 401
-        sprint_id = 953
-        self.report.load(project, board_id, sprint_id)
-        self.assertIsInstance(self.report.burndown_table, pd.DataFrame)
-        self.assertIsInstance(self.report.burndown_chart, str)
-
-    @unittest.skip
     def test_show_report(self):
         project = 'FDSEWMSR'
         board_id = 401
         sprint_id = 953
         self.report.load(project, board_id, sprint_id)
-        output = self.report.show_report()
+
+        zephyr_plugin = get_plugin("zephyr_scale", self.report.jira_service, zephyr_api=self.zephyr_scale_api_key)
+        self.assertIsInstance(zephyr_plugin, ZephyrSprintReportPlugin)
+
+        zephyr_plugin.load_url(self.report.sprint_report_url)
+        self.assertIsInstance(zephyr_plugin.test_case_statistics_data_table, pd.DataFrame)
+
+        output = zephyr_plugin.show_report()        
         self.assertIsInstance(output, str)
+        print(output)
 
 
 if __name__ == '__main__':
