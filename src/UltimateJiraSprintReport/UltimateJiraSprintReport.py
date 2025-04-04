@@ -115,7 +115,7 @@ class UltimateJiraSprintReport:
              None, None, None, None
             )
 
-    from reporter.reporter import (
+    from .reporter.reporter import (
         show_burndown_chart,
         show_burndown_table,
         show_committed_vs_planned_chart,
@@ -254,7 +254,7 @@ class UltimateJiraSprintReport:
         return self
 
     def _load_sprint_statistics(self):
-        from functions._sprint_details import load_sprint_statistics
+        from .functions._sprint_details import load_sprint_statistics
 
         (
             self.removed,
@@ -269,13 +269,13 @@ class UltimateJiraSprintReport:
         return self
 
     def _load_sprint_issue_types_statistics(self):
-        from functions._sprint_details import load_sprint_issue_types_statistics
+        from .functions._sprint_details import load_sprint_issue_types_statistics
 
         self.sprint_issue_types_statistics = load_sprint_issue_types_statistics(self.sprint_report)
         return self
 
     def _load_committed_vs_planned_chart(self):
-        from functions._sprint_details import load_committed_vs_planned_chart
+        from .functions._sprint_details import load_committed_vs_planned_chart
 
         image_base64 = load_committed_vs_planned_chart(
             self.removed,
@@ -291,13 +291,13 @@ class UltimateJiraSprintReport:
         return self
 
     def _calculate_sprint_details(self):
-        from functions._sprint_details import calculate_sprint_details
+        from .functions._sprint_details import calculate_sprint_details
 
         self.sprint_details = calculate_sprint_details(self.board_config, self.sprint_report)
         return self
 
     def _calculate_sprint_predictability(self):
-        from functions._predictability import calculate_predictability
+        from .functions._predictability import calculate_predictability
 
         self.this_sprint_predictability, self.predictability_data = calculate_predictability(
             self.velocity_statistics,
@@ -308,7 +308,7 @@ class UltimateJiraSprintReport:
         return self
 
     def _calculate_epic_statistics(self) -> pd.DataFrame | str:
-        from functions._epic_statistics import calculate_epic_statistics
+        from .functions._epic_statistics import calculate_epic_statistics
 
         self.epic_statistics = calculate_epic_statistics(
             self.jira_service,
@@ -318,7 +318,7 @@ class UltimateJiraSprintReport:
         return self
 
     def _load_burndown(self) -> pd.DataFrame | str:
-        from functions._burndown import load_burndown
+        from .functions._burndown import load_burndown
 
         df, image_base64 = load_burndown(
             self.jira_service,

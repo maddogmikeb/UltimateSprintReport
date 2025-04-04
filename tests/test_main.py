@@ -9,9 +9,10 @@ import unittest
 import pandas as pd
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(SCRIPT_DIR))
+SRC_DIR = os.path.join(os.path.dirname(SCRIPT_DIR), "src")
+sys.path.append(SRC_DIR)
 
-from UltimateJiraSprintReport import UltimateJiraSprintReport
+from UltimateJiraSprintReport.UltimateJiraSprintReport import UltimateJiraSprintReport
 
 class TestUltimateJiraSprintReport(unittest.TestCase):
 

@@ -15,8 +15,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from services._jira_service import JiraService
-from utils._pandas_utils import make_clickable
+from ..services._jira_service import JiraService
+from ..utils._pandas_utils import make_clickable
 
 
 def _find_status_by_id(statuses, status_id):
