@@ -18,9 +18,9 @@ from ..services._jira_service import JiraService
 from ..utils._pandas_utils import make_clickable
 
 
-def _find_status_by_id(statuses, status_id):
+def _find_status_by_id(statuses, status_id: int):
     for status in statuses:
-        if status["id"] == status_id:
+        if int(status["id"]) == int(status_id):
             return status
     return {"name": "Unknown"}
 
@@ -52,7 +52,7 @@ def load_burndown(
     scope = []
     already_done = set()
 
-    statuses = jira_service.get("/rest/api/2/status")
+    statuses = jira_service.get_statuses()
 
     scope_change_burndown_chart = jira_service.get_scope_change_burndown_chart(
         rapid_view_id, sprint_id

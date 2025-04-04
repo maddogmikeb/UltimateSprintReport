@@ -20,6 +20,14 @@ class JiraService:
         self.host = host
         self.jira = None  # Placeholder for Jira instance
 
+    def _get(self, url: str):
+        response = self.jira.request(
+            absolute=True,
+            method="GET",
+            path=f"{self.host}{url}",
+        )
+        return response.content
+
     def authenticate(self):
         self.jira = Jira(
             url=self.host,
@@ -43,14 +51,6 @@ class JiraService:
     def myself(self):
         return self.jira.myself()
 
-    def get(self, url: str):
-        response = self.jira.request(
-            absolute=True,
-            method="GET",
-            path=f"{self.host}{url}",
-        )
-        return response.content
-
     def get_issue(self, key: str, fields: str="*all"):
         return self.jira.issue(key=key, fields=fields)
 
@@ -62,7 +62,7 @@ class JiraService:
 
     def get_scope_change_burndown_chart(self, rapid_view_id: int, sprint_id: int):
         return json.loads(
-            self.get(
+            self._get(
                 f"rest/greenhopper/1.0/rapid/charts/scopechangeburndownchart.json?"
                 f"rapidViewId={rapid_view_id}&"
                 f"sprintId={sprint_id}"
@@ -71,7 +71,7 @@ class JiraService:
 
     def get_board_config(self, rapid_view_id: int):
         return json.loads(
-            self.get(
+            self._get(
                 f"rest/greenhopper/1.0/rapidviewconfig/editmodel.json?"
                 f"rapidViewId={rapid_view_id}"
             )
@@ -79,15 +79,15 @@ class JiraService:
 
     def get_velocity_statistics(self, rapid_view_id: int):
         return json.loads(
-            self.get(
+            self._get(
                 f"rest/greenhopper/1.0/rapid/charts/velocity.json?"
                 f"rapidViewId={rapid_view_id}"
             )
         )
 
     def get_sprint_report(self, rapid_view_id: int, sprint_id: int):
-        return  json.loads(
-            self.get(
+        return json.loads(
+            self._get(
                 f"/rest/greenhopper/latest/rapid/charts/sprintreport?"
                 f"rapidViewId={rapid_view_id}&"
                 f"sprintId={sprint_id}"
@@ -95,7 +95,11 @@ class JiraService:
         )
 
     def get_status_categories(self):
-        return self.jira.get("rest/api/2/statuscategory")
+        return json.loads(
+            self._get("rest/api/2/statuscategory")
+        )
 
     def get_statuses(self):
-        return self.jira.get("rest/api/2/status")
+        return json.loads(
+            self._get("rest/api/2/status")
+        )

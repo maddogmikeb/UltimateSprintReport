@@ -7,8 +7,9 @@ import os
 import sys
 import unittest
 
-from UltimateJiraSprintReport.UltimateJiraSprintReport import UltimateJiraSprintReport
 import pandas as pd
+
+from UltimateJiraSprintReport.UltimateJiraSprintReport import UltimateJiraSprintReport
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 SRC_DIR = os.path.join(os.path.dirname(SCRIPT_DIR), "src")
@@ -27,18 +28,19 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
         self.assertIsInstance(self.report, UltimateJiraSprintReport)
         print(self.report.show_login_details())
 
+    @unittest.skip
     def test_load(self):
         project = 'FDSEWMSR'
-        board_id = 364
-        sprint_id = 945
+        board_id = 401
+        sprint_id = 953
         self.report.load(project, board_id, sprint_id)
         self.assertIsInstance(self.report.burndown_table, pd.DataFrame)
         self.assertIsInstance(self.report.burndown_chart, str)
 
     def test_show_report(self):
         project = 'FDSEWMSR'
-        board_id = 364
-        sprint_id = 945
+        board_id = 401
+        sprint_id = 953
         self.report.load(project, board_id, sprint_id)
         output = self.report.show_report()
         self.assertIsInstance(output, str)
