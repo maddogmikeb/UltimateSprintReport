@@ -52,8 +52,8 @@
     ],
     "python.testing.pytestEnabled": false,
     "python.testing.unittestEnabled": true,
-    "python.analysis.extraPaths": ["./src", "./src/UltimateJiraSprintReport", "/**", "/workspaces/UltimateSprintReport/src/UltimateJiraSprintReport/UltimateJiraSprintReport"], 
-    "python.autoComplete.extraPaths": ["./src", "./src/UltimateJiraSprintReport", "/**", "/workspaces/UltimateSprintReport/src/UltimateJiraSprintReport/UltimateJiraSprintReport"],
+    "python.analysis.extraPaths": ["${workspaceFolder}/src",], 
+    "python.autoComplete.extraPaths": ["${workspaceFolder}/src"],
     "python.analysis.autoImportCompletions": true,
     "python.analysis.diagnosticMode": "workspace",
 }

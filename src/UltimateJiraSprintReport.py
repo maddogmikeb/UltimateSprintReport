@@ -19,8 +19,8 @@ import pandas as pd
 
 from tqdm.auto import tqdm
 
-from services._jira_service import JiraService
-from utils._http_utils import parse_url
+from .services._jira_service import JiraService
+from .utils._http_utils import parse_url
 
 
 class UltimateJiraSprintReport:
