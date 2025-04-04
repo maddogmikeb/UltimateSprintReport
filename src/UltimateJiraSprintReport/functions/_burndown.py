@@ -4,16 +4,15 @@
 # pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
 # pylint: disable=too-many-positional-arguments, too-many-arguments
 
-import io
 import base64
-import re
-from datetime import datetime
-
 from collections.abc import Callable
+from datetime import datetime
+import io
+import re
 
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 from ..services._jira_service import JiraService
 from ..utils._pandas_utils import make_clickable
@@ -30,9 +29,9 @@ def load_burndown(
     jira_service: JiraService,
     rapid_view_id: int,
     sprint_id: int,
-    on_start: Callable[[float, str], None] = None,
-    on_iteration: Callable[[str], None] = None,
-    on_finish: Callable[[str], None] = None,
+    on_start: Callable[[float, str], None]=None,
+    on_iteration: Callable[[str], None]=None,
+    on_finish: Callable[[str], None]=None,
 ) -> pd.DataFrame | str:
 
     if on_start is None:
@@ -74,7 +73,7 @@ def load_burndown(
     already_checked_for_resolution = set()
     on_start(
         len(scope_change_burndown_chart["changes"].items()) * 2
-        + len(scope_change_burndown_chart["openCloseChanges"].items()),
+        +len(scope_change_burndown_chart["openCloseChanges"].items()),
         "Loading burndown chart",
     )
 
@@ -286,7 +285,7 @@ def load_burndown(
                     new_status_id = (
                         (
                             " to "
-                            + _find_status_by_id(
+                            +_find_status_by_id(
                                 statuses, change["column"]["newStatus"]
                             )["name"]
                         )

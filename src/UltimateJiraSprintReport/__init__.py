@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
+# pylint: disable=missing-module-docstring, invalid-name
 
 from UltimateJiraSprintReport.UltimateJiraSprintReport import UltimateJiraSprintReport
 

@@ -5,6 +5,7 @@ from atlassian import Jira
 
 
 class JiraService:
+
     def __init__(self, username: str, password: str, host: str):
         if ((host is None or len(host) <= 5) or
             (username is None  or len(username) <= 2) or
@@ -50,7 +51,7 @@ class JiraService:
         )
         return response.content
 
-    def get_issue(self, key: str, fields: str = "*all"):
+    def get_issue(self, key: str, fields: str="*all"):
         return self.jira.issue(key=key, fields=fields)
 
     def jql_query(self, jql: str, fields: str):

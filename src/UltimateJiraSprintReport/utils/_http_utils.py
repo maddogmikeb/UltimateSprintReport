@@ -7,6 +7,7 @@ import re
 # pylint: disable=line-too-long
 URL_REGEX = r"(https?)://([^/]+)/jira/software/c/projects/([^/]+)/boards/(\d+)/reports/sprint-retrospective\?sprint=(\d+)"
 
+
 def parse_url(url):
     match = re.search(URL_REGEX, url)
     if not match:

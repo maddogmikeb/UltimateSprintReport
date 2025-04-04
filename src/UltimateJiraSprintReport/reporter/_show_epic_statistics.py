@@ -1,5 +1,3 @@
-# pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring, protected-access
-
 """
 This module contains functions for generating various sections of an HTML sprint report.
 """

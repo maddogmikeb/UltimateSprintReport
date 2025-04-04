@@ -12,9 +12,9 @@ def calculate_predictability(
     sprint_id,
     this_sprint_points_completed,
     this_sprint_points_committed,
-    on_start: Callable[[float, str], None] = None,
-    on_iteration: Callable[[str], None] = None,
-    on_finish: Callable[[str], None] = None,
+    on_start: Callable[[float, str], None]=None,
+    on_iteration: Callable[[str], None]=None,
+    on_finish: Callable[[str], None]=None,
 ):
 
     if on_start is None:
@@ -35,7 +35,7 @@ def calculate_predictability(
     this_sprint_predictability = None
     predictability_data = []
 
-    for sprint in sorted(velocity_statistics["sprints"], key=lambda i: -i["sequence"]):
+    for sprint in sorted(velocity_statistics["sprints"], key=lambda i:-i["sequence"]):
         sprint_id_str = str(sprint["id"])
         estimated_points = velocity_statistics["velocityStatEntries"][sprint_id_str][
             "estimated"

@@ -3,16 +3,18 @@
 # pylint: disable=too-many-positional-arguments, too-many-arguments
 
 import base64
-import io
-from datetime import datetime
 from collections.abc import Callable
+from datetime import datetime
+import io
 
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
 from ..models._data_point import DataPoint
+
 
 def _calculate_estimates(sprint_report, status_category_id) -> tuple[int, int]:
     count = 0
@@ -28,8 +30,10 @@ def _calculate_estimates(sprint_report, status_category_id) -> tuple[int, int]:
 
     return count, estimate
 
+
 def _get_status_category_id(status_categories, name) -> str:
     return str(next(x["id"] for x in status_categories if x["name"] == name))
+
 
 def load_sprint_issue_types_statistics(sprint_report) -> pd.DataFrame:
     issue_types = {}
@@ -67,6 +71,7 @@ def load_sprint_issue_types_statistics(sprint_report) -> pd.DataFrame:
     )
 
     return df_transposed
+
 
 def load_sprint_statistics(sprint_report, sprint_velocity_statistics, status_categories) -> tuple[DataPoint, DataPoint, DataPoint, DataPoint, DataPoint, tuple[int, int]]:
 
@@ -135,12 +140,12 @@ def load_sprint_statistics(sprint_report, sprint_velocity_statistics, status_cat
     else:
         total_committed = [
             len(sprint_report["contents"]["completedIssues"])
-            + len(
+            +len(
                 sprint_report["contents"]["issuesNotCompletedInCurrentSprint"]
             )
-            + len(sprint_report["contents"]["issuesCompletedInAnotherSprint"])
-            + len(sprint_report["contents"]["puntedIssues"])
-            - len(sprint_report["contents"]["issueKeysAddedDuringSprint"]),
+            +len(sprint_report["contents"]["issuesCompletedInAnotherSprint"])
+            +len(sprint_report["contents"]["puntedIssues"])
+            -len(sprint_report["contents"]["issueKeysAddedDuringSprint"]),
             sum(
                 float(sprint_report["contents"].get(key, {}).get("value", 0))
                 for key in [
@@ -154,12 +159,13 @@ def load_sprint_statistics(sprint_report, sprint_velocity_statistics, status_cat
 
     return removed, done, completed_outside, in_progress, to_do, total_committed
 
+
 def calculate_sprint_details(
     board_config,
     sprint_report,
-    on_start: Callable[[float, str], None] = None,
-    on_iteration: Callable[[str], None] = None,
-    on_finish: Callable[[str], None] = None,
+    on_start: Callable[[float, str], None]=None,
+    on_iteration: Callable[[str], None]=None,
+    on_finish: Callable[[str], None]=None,
 ) -> dict[str, str]:
 
     if on_start is None:
@@ -213,6 +219,7 @@ def calculate_sprint_details(
         "end_date_string": str(sprint_report["sprint"]["endDate"]),
         "duration_days": str(days),
     }
+
 
 def load_committed_vs_planned_chart(removed: DataPoint, done: DataPoint, completed_outside: DataPoint, in_progress: DataPoint, to_do: DataPoint, total_committed: tuple[int, int]) -> str:
     data_points = [
@@ -289,9 +296,9 @@ def load_committed_vs_planned_chart(removed: DataPoint, done: DataPoint, complet
             [
                 total_committed[0],
                 data_points[1].count
-                + data_points[2].count
-                + data_points[3].count
-                + data_points[4].count,
+                +data_points[2].count
+                +data_points[3].count
+                +data_points[4].count,
             ]
         )
         * 1.1,
@@ -302,9 +309,9 @@ def load_committed_vs_planned_chart(removed: DataPoint, done: DataPoint, complet
             [
                 total_committed[1],
                 data_points[1].points
-                + data_points[2].points
-                + data_points[3].points
-                + data_points[4].points,
+                +data_points[2].points
+                +data_points[3].points
+                +data_points[4].points,
             ]
         )
         * 1.1,

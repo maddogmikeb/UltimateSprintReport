@@ -6,13 +6,14 @@
 import os
 import sys
 import unittest
+
+from UltimateJiraSprintReport.UltimateJiraSprintReport import UltimateJiraSprintReport
 import pandas as pd
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 SRC_DIR = os.path.join(os.path.dirname(SCRIPT_DIR), "src")
 sys.path.append(SRC_DIR)
 
-from UltimateJiraSprintReport.UltimateJiraSprintReport import UltimateJiraSprintReport
 
 class TestUltimateJiraSprintReport(unittest.TestCase):
 
@@ -41,6 +42,7 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
         self.report.load(project, board_id, sprint_id)
         output = self.report.show_report()
         self.assertIsInstance(output, str)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -15,9 +15,8 @@ Classes:
 # pylint: disable=missing-function-docstring, invalid-name
 # pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
 
-import pandas as pd
-
 from tqdm.auto import tqdm
+import pandas as pd
 
 from .services._jira_service import JiraService
 from .utils._http_utils import parse_url
@@ -116,18 +115,18 @@ class UltimateJiraSprintReport:
             )
 
     from .reporter.reporter import (
-        show_burndown_chart,
-        show_burndown_table,
-        show_committed_vs_planned_chart,
-        show_epic_statistics,
-        show_predictability,
-        show_report,
-        show_sprint_predictability,
-        show_committed_vs_planned,
-        show_login_details,
-        show_sprint_details,
-        show_sprint_issue_types_statistics,
-        show_sprint_test_case_statistics
+        show_burndown_chart,  # pylint: disable=unused-import
+        show_burndown_table,  # pylint: disable=unused-import
+        show_committed_vs_planned_chart,  # pylint: disable=unused-import
+        show_epic_statistics,  # pylint: disable=unused-import
+        show_predictability,  # pylint: disable=unused-import
+        show_report,  # pylint: disable=unused-import
+        show_sprint_predictability,  # pylint: disable=unused-import
+        show_committed_vs_planned,  # pylint: disable=unused-import
+        show_login_details,  # pylint: disable=unused-import
+        show_sprint_details,  # pylint: disable=unused-import
+        show_sprint_issue_types_statistics,  # pylint: disable=unused-import
+        show_sprint_test_case_statistics  # pylint: disable=unused-import
     )
 
     def is_connected(self):

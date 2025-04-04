@@ -4,6 +4,7 @@
 
 from matplotlib.patches import Patch
 
+
 class DataPoint:
 
     def __init__(

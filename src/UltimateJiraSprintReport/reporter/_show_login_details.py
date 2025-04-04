@@ -1,5 +1,3 @@
-# pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring, line-too-long
-
 """
 This module contains functions for generating various sections of an HTML sprint report.
 """
@@ -30,4 +28,3 @@ def show_login_details(self):
         display_name=me["displayName"],
         avatar_url=me["avatarUrls"]["32x32"]
     )
-

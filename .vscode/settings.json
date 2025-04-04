@@ -55,4 +55,5 @@
     "python.analysis.extraPaths": ["${workspaceFolder}/src","${workspaceFolder}/src/services"], 
     "python.autoComplete.extraPaths": ["${workspaceFolder}/src"],
     "python.analysis.diagnosticMode": "workspace",
+    "python.pydev.sortImportsOnFormat": "pydev:pep8",
 }

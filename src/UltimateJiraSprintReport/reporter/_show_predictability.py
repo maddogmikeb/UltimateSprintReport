@@ -1,10 +1,8 @@
-# pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring, protected-access
-
 """
 This module contains functions for generating various sections of an HTML sprint report.
 """
-
 from string import Template
+
 from ..utils._predictability_utils import calculate_predictability_score_stars
 
 def show_predictability(self):

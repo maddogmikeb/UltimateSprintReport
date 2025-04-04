@@ -1,4 +1,3 @@
-# pylint: disable=missing-module-docstring, missing-function-docstring
 # pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
 # pylint: disable=too-many-positional-arguments, too-many-arguments
 
@@ -11,6 +10,7 @@ Functions:
 """
 
 import pandas as pd
+
 
 def make_clickable(val: any, base_url: str):
     """
@@ -28,6 +28,7 @@ def make_clickable(val: any, base_url: str):
         return val
 
     return f'<a target="_blank" href="{base_url}/browse/{val}">{val}</a>'
+
 
 def format_timestamp(timestamp):
     """

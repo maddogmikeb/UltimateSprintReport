@@ -1,6 +1,3 @@
-# pylint: disable=missing-module-docstring, missing-function-docstring
-# pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
-# pylint: disable=too-many-positional-arguments, too-many-arguments
 """
 This module provides utility functions for calculating predictability scores and ratings.
 
@@ -8,6 +5,7 @@ Functions:
     - calculate_predictability_score: Calculates the predictability score and star rating.
     - calculate_predictability_score_stars: Converts a predictability score to a star rating.
 """
+
 
 def calculate_predictability_score(estimated_points, completed_points):
     """
@@ -29,6 +27,7 @@ def calculate_predictability_score(estimated_points, completed_points):
     predictability_score = abs(1 - (completed_points / estimated_points))
     stars = calculate_predictability_score_stars(predictability_score)
     return predictability_score, stars
+
 
 def calculate_predictability_score_stars(predictability_score: float):
     """
