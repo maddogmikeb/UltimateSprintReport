@@ -80,7 +80,7 @@ def load_burndown(
                 already_done.add(change["key"])
             if change["key"] not in already_checked_for_resolution:
                 issue = jira_service.get_issue(
-                    key=change["key"], fields="resolutiondate"
+                    key=change["key"] #, fields="resolutiondate"
                 )
                 already_checked_for_resolution.add(change["key"])
                 if (

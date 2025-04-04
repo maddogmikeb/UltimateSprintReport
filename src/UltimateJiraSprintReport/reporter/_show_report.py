@@ -104,7 +104,6 @@ def show_report(self):
                 <tr>
                     <td colspan='3'>${predictability}</td>
                 </tr>
-                ${test_case_statistics_row}
                 <tr>
                     <td colspan='3'>${burndown_table}</td>
                 </tr>
@@ -153,21 +152,6 @@ def show_report(self):
         """
     )
 
-    test_case_statistics_template = Template(
-        """
-        <tr>
-            <td colspan='3'>${test_case_statistics}</td>
-        </tr>
-        """
-    )
-
-    if self.test_case_statistics_data_table is not None:
-        test_case_statistics_row = test_case_statistics_template.substitute(
-            test_case_statistics=self.show_sprint_test_case_statistics()
-        )
-    else:
-        test_case_statistics_row = ""
-
     return template.substitute(
         sprint_details=self.show_sprint_details(),
         sprint_predictability=self.show_sprint_predictability(),
@@ -177,6 +161,5 @@ def show_report(self):
         sprint_issue_types_statistics=self.show_sprint_issue_types_statistics(),
         epic_statistics=self.show_epic_statistics(),
         predictability=self.show_predictability(),
-        test_case_statistics_row=test_case_statistics_row,
         burndown_table=self.show_burndown_table(),
     )
