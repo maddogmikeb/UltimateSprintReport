@@ -20,7 +20,8 @@ import pandas as pd
 
 from .services._jira_service import JiraService
 from .utils._http_utils import parse_url
-
+from .plugins.plugin_register import get_plugin
+from .plugins.plugin import Plugin
 
 class UltimateJiraSprintReport:
     """
@@ -131,6 +132,11 @@ class UltimateJiraSprintReport:
 
     def is_connected(self):
         return self.jira_service.is_connected()
+
+    def load_plugin(self, plugin_name, **kwargs) -> Plugin:
+        plugin = get_plugin(plugin_name, self.jira_service, **kwargs)
+        plugin.load_url(self.sprint_report_url)
+        return plugin
 
     def load(self, project: str, board_id: int, sprint_id: int):
         sprint_url = f"{self.jira_service.host}jira/software/c/projects/{project}/boards/{board_id}/reports/sprint-retrospective?sprint={sprint_id}"

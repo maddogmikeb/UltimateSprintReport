@@ -25,8 +25,11 @@ class Plugin():
         self._set_sprint_details(sprint_report_url)
         return self
 
+    def load(self):
+        return self
+
     def show_report(self):
-        pass 
+        pass
 
     def _set_sprint_details(self, sprint_report_url: str):
         self.sprint_report_url = sprint_report_url

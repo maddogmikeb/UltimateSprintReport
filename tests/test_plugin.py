@@ -10,7 +10,6 @@ import unittest
 import pandas as pd
 
 from UltimateJiraSprintReport.UltimateJiraSprintReport import UltimateJiraSprintReport
-from UltimateJiraSprintReport.plugins.plugin_register import get_plugin
 from UltimateJiraSprintReport.plugins.zephyr_scale.zephyr_sprint_report_plugin import ZephyrSprintReportPlugin
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -37,10 +36,10 @@ class TestPlugin(unittest.TestCase):
         sprint_id = 953
         self.report.load(project, board_id, sprint_id)
 
-        zephyr_plugin = get_plugin("zephyr_scale", self.report.jira_service, zephyr_api=self.zephyr_scale_api_key)
+        zephyr_plugin = self.report.load_plugin("zephyr_scale", zephyr_api=self.zephyr_scale_api_key)
         self.assertIsInstance(zephyr_plugin, ZephyrSprintReportPlugin)
 
-        zephyr_plugin.load_url(self.report.sprint_report_url)
+        zephyr_plugin.load()
         self.assertIsInstance(zephyr_plugin.test_case_statistics_data_table, pd.DataFrame)
 
         output = zephyr_plugin.show_report()

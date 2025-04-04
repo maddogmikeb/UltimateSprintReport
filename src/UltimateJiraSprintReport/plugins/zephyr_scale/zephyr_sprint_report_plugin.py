@@ -23,13 +23,10 @@ class ZephyrSprintReportPlugin(Plugin):
     def __init__(self, jira_service: JiraService, zephyr_api: str):
         super().__init__(jira_service)
         self.zephyr_service = ZephyrScaleApiService(zephyr_api)
-        self.test_case_statistics_data_table = None
+        self.test_case_statistics_data_table = None  
 
-    def load_url(self, sprint_report_url: str):
-        super()._set_sprint_details(sprint_report_url)
-
+    def load(self):
         self.test_case_statistics_data_table = self.process_issues()
-
         return self
 
     def process_issues(
