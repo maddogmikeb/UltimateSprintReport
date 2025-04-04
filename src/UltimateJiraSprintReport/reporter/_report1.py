@@ -137,22 +137,22 @@ def show_committed_vs_planned(self):
     """
     )
     return template.substitute(
-        total_committed_count=self.TotalCommitted[0],
-        total_committed_estimate=f"{self.TotalCommitted[1]:.1f}",
-        completed_count=self.Done.count,
-        completed_estimate=f"{self.Done.points:.1f}",
-        completed_outside_count=self.CompletedOutside.count,
-        completed_outside_estimate=f"{self.CompletedOutside.points:.1f}",
-        total_completed_count=self.Done.count + self.CompletedOutside.count,
-        total_completed_estimate=f"{self.Done.points + self.CompletedOutside.points:.1f}",
-        in_progress_count=self.InProgress.count,
-        in_progress_estimate=f"{self.InProgress.points:.1f}",
-        to_do_count=self.ToDo.count,
-        to_do_estimate=f"{self.ToDo.points:.1f}",
-        remaining_count=self.InProgress.count + self.ToDo.count,
-        remaining_estimate=f"{self.InProgress.points + self.ToDo.points:.1f}",
-        removed_count=self.Removed.count,
-        removed_estimate=f"{self.Removed.points:.1f}",
+        total_committed_count=self.total_committed[0],
+        total_committed_estimate=f"{self.total_committed[1]:.1f}",
+        completed_count=self.done.count,
+        completed_estimate=f"{self.done.points:.1f}",
+        completed_outside_count=self.completed_outside.count,
+        completed_outside_estimate=f"{self.completed_outside.points:.1f}",
+        total_completed_count=self.done.count + self.completed_outside.count,
+        total_completed_estimate=f"{self.done.points + self.completed_outside.points:.1f}",
+        in_progress_count=self.in_progress.count,
+        in_progress_estimate=f"{self.in_progress.points:.1f}",
+        to_do_count=self.to_do.count,
+        to_do_estimate=f"{self.to_do.points:.1f}",
+        remaining_count=self.in_progress.count + self.to_do.count,
+        remaining_estimate=f"{self.in_progress.points + self.to_do.points:.1f}",
+        removed_count=self.removed.count,
+        removed_estimate=f"{self.removed.points:.1f}",
     )
 
 

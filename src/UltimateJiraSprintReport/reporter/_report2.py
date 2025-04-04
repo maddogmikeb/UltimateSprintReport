@@ -5,6 +5,7 @@ This module contains functions for generating various sections of an HTML sprint
 """
 
 from string import Template
+from ..utils._predictability_utils import calculate_predictability_score_stars
 
 link_new_window_template = Template(
     "<a href='${url}' target='_blank'>[${key}] ${summary}</a>"
@@ -79,7 +80,7 @@ def show_predictability(self):
         )
 
     mean_score = f"{total_predictability_score / total:.2f}" if total > 0 else "-"
-    mean_stars = self._calculate_predictability_score_stars(
+    mean_stars = calculate_predictability_score_stars(
         total_predictability_score / total if total > 0 else 0
     )
 
