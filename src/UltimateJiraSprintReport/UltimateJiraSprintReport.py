@@ -130,6 +130,9 @@ class UltimateJiraSprintReport:
         show_sprint_test_case_statistics
     )
 
+    def is_connected(self):
+        return self.jira_service.is_connected()
+
     def load(self, project: str, board_id: int, sprint_id: int):
         sprint_url = f"{self.jira_service.host}jira/software/c/projects/{project}/boards/{board_id}/reports/sprint-retrospective?sprint={sprint_id}"
         return self.load_url(sprint_url)
