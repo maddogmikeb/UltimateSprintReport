@@ -17,7 +17,69 @@ def show_report(self):
         <html>
         <head>
             <style>
-                /* Add your CSS styles here */
+                table.dataframe, table {
+                    width: 100%;
+                }
+                table.dataframe th, th {
+                    text-align: left;
+                    font-weight: bold;
+                }
+                table.dataframe tbody th, tbody th {
+                    font-weight: bold;
+                }
+                table.dataframe td, td {
+                    vertical-align: top;
+                    text-align: left;
+                }
+                h2 {
+                    text-align: left;
+                }
+                #main-table {
+                    border-spacing: 20px;
+                }
+                #committed_vs_planned_chart {
+                    max-width: 200px;
+                }
+                #burndown_chart {
+                    max-width: 200px;
+                }
+                /* Popup container - can be anything you want */
+                .popup {
+                    display: none; /* Hidden by default */
+                    position: fixed; /* Stay in place */
+                    z-index: 1; /* Sit on top */
+                    padding-top: 100px; /* Location of the box */
+                    left: 0;
+                    top: 0;
+                    width: 100%; /* Full width */
+                    height: 100%; /* Full height */
+                    overflow: auto; /* Enable scroll if needed */
+                    background-color: rgb(0,0,0); /* Fallback color */
+                    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+                }
+                /* Popup content */
+                .popup-content {
+                    margin: auto;
+                    display: block;
+                    width: 80%;
+                    max-width: 700px;
+                }
+                /* Close button */
+                .close {
+                    position: absolute;
+                    top: 15px;
+                    right: 35px;
+                    color: #f1f1f1;
+                    font-size: 40px;
+                    font-weight: bold;
+                    transition: 0.3s;
+                }
+                .close:hover,
+                .close:focus {
+                    color: #bbb;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
             </style>
         </head>
         <body>
@@ -48,6 +110,44 @@ def show_report(self):
                 </tr>
             </tbody>
             </table>
+            <!-- The Popup -->
+            <div id="popup" class="popup">
+                <span class="close" onclick="closePopup()">&times;</span>
+                <img class="popup-content" id="popup-img">
+            </div>
+            <script>
+                // Open the popup
+                function openPopup(src) {
+                    var popup = document.getElementById("popup");
+                    var popupImg = document.getElementById("popup-img");
+                    popup.style.display = "block";
+                    popupImg.src = src;
+                }
+                // Close the popup
+                function closePopup() {
+                    var popup = document.getElementById("popup");
+                    popup.style.display = "none";
+                }
+                listenerSet = false;
+                function setListeners() {
+                    if (!listenerSet) {
+                    var images = document.querySelectorAll("img");
+                    images.forEach(function(img) {
+                        img.addEventListener("click", function() {
+                                openPopup(img.src);
+                        });
+                        listenerSet = true;
+                    });
+                    }
+                }
+                // Add click event to all images within the limited-width class
+                document.addEventListener("DOMContentLoaded", function() {
+                    setListeners();
+                });
+                document.addEventListener("click", function(event) {
+                    setListeners();
+                });
+            </script>
         </body>
         </html>
         """
