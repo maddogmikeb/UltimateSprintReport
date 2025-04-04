@@ -34,5 +34,13 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
         self.assertIsInstance(self.report.burndown_table, pd.DataFrame)
         self.assertIsInstance(self.report.burndown_chart, str)
 
+    def test_show_report(self):
+        project = 'FDSEWMSR'
+        board_id = 364
+        sprint_id = 945
+        self.report.load(project, board_id, sprint_id)
+        output = self.report.show_report()
+        self.assertIsInstance(output, str)
+
 if __name__ == '__main__':
     unittest.main()

@@ -54,6 +54,5 @@
     "python.testing.unittestEnabled": true,
     "python.analysis.extraPaths": ["${workspaceFolder}/src","${workspaceFolder}/src/services"], 
     "python.autoComplete.extraPaths": ["${workspaceFolder}/src"],
-    "python.analysis.autoImportCompletions": true,
     "python.analysis.diagnosticMode": "workspace",
 }

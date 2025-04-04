@@ -1,74 +1,10 @@
-# pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring, line-too-long
+# pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring, protected-access
 
 """
 This module contains functions for generating various sections of an HTML sprint report.
 """
 
 from string import Template
-
-
-def show_login_details(self):
-    """
-    Generates an HTML table displaying the currently logged-in user's details.
-
-    Returns:
-        str: HTML string containing the user's display name and avatar.
-    """
-    me = self.jira_service.myself()
-    template = Template(
-        """
-        <table>
-            <tr>
-                <td>Currently logged in as:</td>
-                <td>${display_name}</td>
-                <td><img src='${avatar_url}' /></td>
-            </tr>
-        </table>
-    """
-    )
-    return template.substitute(
-        display_name=me["displayName"],
-        avatar_url=me["avatarUrls"]["32x32"]
-    )
-
-
-def show_sprint_test_case_statistics(self):
-    """
-    Generates an HTML section displaying sprint test case statistics.
-
-    Returns:
-        str: HTML string containing a table of test case statistics.
-    """
-    template = Template(
-        """
-        <h2>Sprint Test Case Statistics</h2>
-        ${data_table}
-    """
-    )
-    return template.substitute(
-        data_table=self.test_case_statistics_data_table.to_html(escape=False).replace(
-            "NaN", "-"
-        )
-    )
-
-
-def show_sprint_issue_types_statistics(self):
-    """
-    Generates an HTML section displaying sprint issue type statistics.
-
-    Returns:
-        str: HTML string containing a table of issue type statistics.
-    """
-    template = Template(
-        """
-        <h2>Issue Type Statistics</h2>
-        ${data_table}
-    """
-    )
-    return template.substitute(
-        data_table=self.sprint_issue_types_statistics.to_html()
-    )
-
 
 def show_committed_vs_planned(self):
     """
@@ -153,55 +89,4 @@ def show_committed_vs_planned(self):
         remaining_estimate=f"{self.in_progress.points + self.to_do.points:.1f}",
         removed_count=self.removed.count,
         removed_estimate=f"{self.removed.points:.1f}",
-    )
-
-
-def show_sprint_details(self):
-    """
-    Generates an HTML table displaying sprint details such as board name, sprint name, goal, and dates.
-
-    Returns:
-        str: HTML string containing sprint details.
-    """
-    template = Template(
-        """
-        <h2>Sprint Details</h2>
-        <table>
-        <tbody>
-            <tr>
-                <td>Board</td>
-                <td>${board_name}</td>
-            </tr>
-            <tr>
-                <td>Sprint Name</td>
-                <td><a target='_blank' href='${sprint_report_url}'>${sprint_name}</a></td>
-            </tr>
-            <tr>
-                <td>Sprint Goal</td>
-                <td>${sprint_goal}</td>
-            </tr>
-            <tr>
-                <td>Start Date</td>
-                <td>${start_date}</td>
-            </tr>
-            <tr>
-                <td>End Date</td>
-                <td>${end_date}</td>
-            </tr>
-            <tr>
-                <td>Duration (days)</td>
-                <td>${duration_days}</td>
-            </tr>
-        </tbody>
-        </table>
-    """
-    )
-    return template.substitute(
-        board_name=self.board_name,
-        sprint_report_url=self.sprint_report_url,
-        sprint_name=self.sprint_details["name"],
-        sprint_goal=self.sprint_details["goal"],
-        start_date=self.sprint_details["start_date_string"],
-        end_date=self.sprint_details["end_date_string"],
-        duration_days=self.sprint_details["duration_days"],
     )
