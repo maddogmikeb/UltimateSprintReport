@@ -1,16 +1,13 @@
-# pylint: disable=protected-access, wrong-import-position, missing-class-docstring
-# pylint: disable=missing-function-docstring, missing-module-docstring
-# pylint: disable=import-error, import-outside-toplevel, line-too-long
-# pylint: disable=too-few-public-methods, too-many-arguments
+# pylint: disable=missing-class-docstring, missing-function-docstring, missing-module-docstring
+# pylint: disable=wrong-import-order, line-too-long
 
 import os
 import sys
 import unittest
 
-import pandas as pd
-
 from UltimateJiraSprintReport.UltimateJiraSprintReport import UltimateJiraSprintReport
 from UltimateJiraSprintReport.plugins.zephyr_scale.zephyr_sprint_report_plugin import ZephyrSprintReportPlugin
+import pandas as pd
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 SRC_DIR = os.path.join(os.path.dirname(SCRIPT_DIR), "src")

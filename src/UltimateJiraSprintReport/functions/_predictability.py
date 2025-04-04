@@ -12,9 +12,9 @@ def calculate_predictability(
     sprint_id,
     this_sprint_points_completed,
     this_sprint_points_committed,
-    on_start: Callable[[float, str], None]=lambda _, __: "", # pylint: disable=unused-argument
-    on_iteration: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
-    on_finish: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
+    on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+    on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+    on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
 ):
     this_sprint_predictability = None
     predictability_data = []

@@ -9,9 +9,10 @@ import requests
 
 ZEPHYR_API_URL = "https://api.zephyrscale.smartbear.com/v2"
 
+
 class ZephyrScaleApiService():
 
-    def __init__(self, zephyr_api: str, cache_results: bool = True):
+    def __init__(self, zephyr_api: str, cache_results: bool=True):
         self.cache_results = cache_results
         self.cache = {}
 

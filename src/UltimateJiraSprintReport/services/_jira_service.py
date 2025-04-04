@@ -6,14 +6,18 @@ from atlassian import Jira
 
 class JiraService:
 
-    def __init__(self, username: str, password: str, host: str, cache_results: bool = True):
+    def __init__(self, username: str, password: str, host: str, cache_results: bool=True):
         self.cache_results = cache_results
         self.cache = {}
 
-        if ((host is None or len(host) <= 5) or
-            (username is None  or len(username) <= 2) or
-            (password is None or len(password) <= 2)):
-            raise ValueError("Jira scheme URL, username and password are required")
+        if (host is None or len(host) <= 5):
+            raise ValueError("Jira scheme URL required")
+
+        if (username is None  or len(username) <= 2):
+            raise ValueError("Username required")
+
+        if (password is None or len(password) <= 2):
+            raise ValueError("Password required")
 
         if host[-1] != "/":
             host += "/"

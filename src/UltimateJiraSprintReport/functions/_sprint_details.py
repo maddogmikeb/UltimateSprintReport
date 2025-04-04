@@ -2,10 +2,8 @@
 # pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
 # pylint: disable=too-many-positional-arguments, too-many-arguments
 
-import base64
 from collections.abc import Callable
 from datetime import datetime
-import io
 
 from matplotlib.lines import Line2D
 
@@ -14,6 +12,7 @@ import numpy as np
 import pandas as pd
 
 from ..models._data_point import DataPoint
+from ..utils._pandas_utils import chart_to_base64_image
 
 
 def _calculate_estimates(sprint_report, status_category_id) -> tuple[int, int]:
@@ -443,13 +442,7 @@ def load_committed_vs_planned_chart(
 
     ax1.legend(handles=legend_elements, bbox_to_anchor=(1.15, 1), loc="upper left")
     plt.title("Committed vs Completed Chart")
-    plt.tight_layout()
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png", pad_inches=0.5)
-
-    buf.seek(0)
-    image_base64 = base64.b64encode(buf.read()).decode("utf-8")
-    buf.close()
+    image_base64 = chart_to_base64_image(plt)
     plt.close()
 
     on_finish("Loaded Committed vs Planned Data")

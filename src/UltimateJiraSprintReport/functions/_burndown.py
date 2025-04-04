@@ -4,10 +4,8 @@
 # pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
 # pylint: disable=too-many-positional-arguments, too-many-arguments
 
-import base64
 from collections.abc import Callable
 from datetime import datetime
-import io
 import re
 
 import matplotlib.pyplot as plt
@@ -15,6 +13,7 @@ import numpy as np
 import pandas as pd
 
 from ..services._jira_service import JiraService
+from ..utils._pandas_utils import chart_to_base64_image
 from ..utils._pandas_utils import make_clickable
 
 
@@ -29,9 +28,9 @@ def load_burndown(
     jira_service: JiraService,
     rapid_view_id: int,
     sprint_id: int,
-    on_start: Callable[[float, str], None]=lambda _, __: "", # pylint: disable=unused-argument
-    on_iteration: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
-    on_finish: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
+    on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+    on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+    on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
 ) -> pd.DataFrame | str:
 
     scope = []
@@ -434,13 +433,7 @@ def load_burndown(
         )
     plt.legend()
     plt.title("Burndown Chart")
-    plt.tight_layout()
-
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png", pad_inches=0.5)
-    buf.seek(0)
-    image_base64 = base64.b64encode(buf.read()).decode("utf-8")
-    buf.close()
+    image_base64 = chart_to_base64_image(plt)
     plt.close()
 
     on_finish(100)

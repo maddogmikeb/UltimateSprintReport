@@ -11,9 +11,9 @@ def calculate_epic_statistics(
         jira_service: JiraService,
         board_config,
         sprint_report,
-        on_start: Callable[[float, str], None]=lambda _, __: "", # pylint: disable=unused-argument
-        on_iteration: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
-        on_finish: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
+        on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+        on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
     ):
     epic_stats = []
 

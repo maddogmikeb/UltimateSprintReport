@@ -1,23 +1,26 @@
 # pylint: disable=import-outside-toplevel, protected-access
-# pylint: disable=import-error, unused-import
+# pylint: disable=import-error, unused-import, wrong-import-order
 # pylint: disable=too-few-public-methods, line-too-long
 # pylint: disable=missing-function-docstring, invalid-name, missing-module-docstring, missing-class-docstring
 # pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
 
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import pandas as pd
-import numpy as np
+
 from tqdm.auto import tqdm
 
 from UltimateJiraSprintReport.plugins.plugin_register import Plugin
-from UltimateJiraSprintReport.services._jira_service import JiraService
-from UltimateJiraSprintReport.utils._pandas_utils import make_clickable
 from UltimateJiraSprintReport.plugins.zephyr_scale.services.zephyr_scale_api_service import ZephyrScaleApiService
 from UltimateJiraSprintReport.plugins.zephyr_scale.utils._pandas_utils import make_testcase_clickable
+from UltimateJiraSprintReport.services._jira_service import JiraService
+from UltimateJiraSprintReport.utils._pandas_utils import make_clickable
+import numpy as np
+import pandas as pd
+
 
 def flatten(xss):
     return [x for xs in xss for x in xs]
+
 
 class ZephyrSprintReportPlugin(Plugin):
 
@@ -26,7 +29,7 @@ class ZephyrSprintReportPlugin(Plugin):
         self.zephyr_service = ZephyrScaleApiService(zephyr_api)
         self.test_case_statistics_data_table = None
 
-        self.progress_bar =  None
+        self.progress_bar = None
 
     def load(self):
 
@@ -35,7 +38,11 @@ class ZephyrSprintReportPlugin(Plugin):
         self.progress_bar.refresh()
 
         def on_start(total, text):
-            self.progress_bar.total = total
+            if not total is None:
+                if self.progress_bar.total > 0:
+                    self.progress_bar.total = self.progress_bar.total + total
+                else:
+                    self.progress_bar.total = total
             self.progress_bar.set_postfix_str(text)
             self.progress_bar.refresh()
 
@@ -45,12 +52,16 @@ class ZephyrSprintReportPlugin(Plugin):
             self.progress_bar.refresh()
 
         def on_finish(text):
-            self.progress_bar.n = 100
             self.progress_bar.set_postfix_str(text)
             self.progress_bar.refresh()
 
-        self.test_case_statistics_data_table = self.process_issues(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
+        self.test_case_statistics_data_table = self.process_issues(
+            on_start=on_start,
+            on_iteration=on_iteration,
+            on_finish=on_finish
+        )
 
+        self.progress_bar.total = 100
         self.progress_bar.n = 100
         self.progress_bar.refresh()
         self.progress_bar.set_postfix_str("Completed")
@@ -60,9 +71,9 @@ class ZephyrSprintReportPlugin(Plugin):
 
     def process_issues(
             self,
-            on_start: Callable[[float, str], None]=lambda _, __: "", # pylint: disable=unused-argument
-            on_iteration: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
-            on_finish: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
+            on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
         ):
 
         issues = self.jira_service.get_sprint_issues(self.sprint_id)
@@ -90,6 +101,7 @@ class ZephyrSprintReportPlugin(Plugin):
             return sprint_test_results
 
         on_start(len(issues), "Loading Zephyr Test Cases")
+
         with ThreadPoolExecutor(max_workers=10) as executor:
             futures = {executor.submit(process_issue, issue): issue for issue in issues}
             for future in as_completed(futures):
@@ -102,7 +114,7 @@ class ZephyrSprintReportPlugin(Plugin):
         processed_issues = flatten(processed_issues)
         if len(processed_issues) == 0:
             # empty data frame - no tests
-            return pd.DataFrame({'Issue Key' : [], 'Test Case' : [], 'Status': [], 'Execution Status': []})
+            return pd.DataFrame({'Issue Key': [], 'Test Case': [], 'Status': [], 'Execution Status': []})
 
         df = pd.DataFrame(processed_issues)
         df["Issue Key"] = df["Issue Key"].apply(lambda x: make_clickable(x, self.base_url))

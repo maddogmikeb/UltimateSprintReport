@@ -7,7 +7,9 @@
 from UltimateJiraSprintReport.services._jira_service import JiraService
 from UltimateJiraSprintReport.utils._http_utils import parse_url
 
+
 class Plugin():
+
     def __init__(self, jira_service: JiraService):
         (
             self.sprint_report_url,

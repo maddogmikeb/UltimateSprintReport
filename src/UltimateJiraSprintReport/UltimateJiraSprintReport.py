@@ -156,7 +156,10 @@ class UltimateJiraSprintReport:
 
         def on_start(total, text):
             if not total is None:
-                self.progress_bar.total = total
+                if self.progress_bar.total > 0:
+                    self.progress_bar.total = self.progress_bar.total + total
+                else:
+                    self.progress_bar.total = total
             self.progress_bar.set_postfix_str(text)
             self.progress_bar.refresh()
 
