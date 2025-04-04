@@ -234,6 +234,7 @@ class UltimateJiraSprintReport:
         self.progress_bar.n = round((11 / 11) * 100, 2)
         self.progress_bar.refresh()
 
+        self.progress_bar.total = 100
         self.progress_bar.n = 100
         self.progress_bar.refresh()
         self.progress_bar.set_postfix_str("Completed")
