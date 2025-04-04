@@ -1,6 +1,1 @@
-functions
-models
-plugins
-reporter
-services
-utils
+UtlimateJiraSprintReport
