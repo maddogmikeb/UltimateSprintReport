@@ -43,7 +43,7 @@ class TestPlugin(unittest.TestCase):
         zephyr_plugin.load_url(self.report.sprint_report_url)
         self.assertIsInstance(zephyr_plugin.test_case_statistics_data_table, pd.DataFrame)
 
-        output = zephyr_plugin.show_report()        
+        output = zephyr_plugin.show_report()
         self.assertIsInstance(output, str)
         print(output)
 

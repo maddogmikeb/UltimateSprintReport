@@ -23,6 +23,7 @@ class Plugin():
     def load_url(self, sprint_report_url: str):
         self.sprint_report_url = sprint_report_url
         self._set_sprint_details(sprint_report_url)
+        return self
 
     def show_report(self):
         pass 
