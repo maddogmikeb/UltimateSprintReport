@@ -8,6 +8,7 @@ from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import pandas as pd
 import numpy as np
+from tqdm.auto import tqdm
 
 from UltimateJiraSprintReport.plugins.plugin_register import Plugin
 from UltimateJiraSprintReport.services._jira_service import JiraService
@@ -23,33 +24,44 @@ class ZephyrSprintReportPlugin(Plugin):
     def __init__(self, jira_service: JiraService, zephyr_api: str):
         super().__init__(jira_service)
         self.zephyr_service = ZephyrScaleApiService(zephyr_api)
-        self.test_case_statistics_data_table = None  
+        self.test_case_statistics_data_table = None
+
+        self.progress_bar =  None
 
     def load(self):
-        self.test_case_statistics_data_table = self.process_issues()
+
+        self.progress_bar = tqdm(total=100, desc="Loading Test Case Details", leave=True)
+        self.progress_bar.n = 0
+        self.progress_bar.refresh()
+
+        def on_start(total, text):
+            self.progress_bar.total = total
+            self.progress_bar.set_postfix_str(text)
+            self.progress_bar.refresh()
+
+        def on_iteration(text):
+            self.progress_bar.update(1)
+            self.progress_bar.set_postfix_str(text)
+            self.progress_bar.refresh()
+
+        def on_finish(text):
+            self.progress_bar.n = 100
+            self.progress_bar.set_postfix_str(text)
+            self.progress_bar.refresh()
+
+        self.test_case_statistics_data_table = self.process_issues(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
+
+        self.progress_bar.set_postfix_str("Completed")
+        self.progress_bar.close()
+
         return self
 
     def process_issues(
             self,
-            on_start: Callable[[float, str], None]=None,
-            on_iteration: Callable[[str], None]=None,
-            on_finish: Callable[[str], None]=None,
+            on_start: Callable[[float, str], None]=lambda _, __: "", # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
         ):
-
-        if on_start is None:
-
-            def on_start(_x, _y):
-                pass
-
-        if on_iteration is None:
-
-            def on_iteration(_x):
-                pass
-
-        if on_finish is None:
-
-            def on_finish(_x):
-                pass
 
         issues = self.jira_service.get_sprint_issues(self.sprint_id)
         processed_issues = []

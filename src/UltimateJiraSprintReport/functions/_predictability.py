@@ -12,31 +12,18 @@ def calculate_predictability(
     sprint_id,
     this_sprint_points_completed,
     this_sprint_points_committed,
-    on_start: Callable[[float, str], None]=None,
-    on_iteration: Callable[[str], None]=None,
-    on_finish: Callable[[str], None]=None,
+    on_start: Callable[[float, str], None]=lambda _, __: "", # pylint: disable=unused-argument
+    on_iteration: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
+    on_finish: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
 ):
-
-    if on_start is None:
-
-        def on_start(_x, _y):
-            pass
-
-    if on_iteration is None:
-
-        def on_iteration(_y):
-            pass
-
-    if on_finish is None:
-
-        def on_finish(_x):
-            pass
-
     this_sprint_predictability = None
     predictability_data = []
 
+    on_start(len(velocity_statistics["sprints"]), "Starting calculations")
+
     for sprint in sorted(velocity_statistics["sprints"], key=lambda i:-i["sequence"]):
         sprint_id_str = str(sprint["id"])
+        on_iteration(f"Checking sprint id: {sprint_id_str}")
         estimated_points = velocity_statistics["velocityStatEntries"][sprint_id_str][
             "estimated"
         ].get("value", 0)
@@ -71,5 +58,7 @@ def calculate_predictability(
             "predictability_score": predictability_score,
             "stars": stars + " (interim)",
         }
+
+    on_finish("Calculated predictability")
 
     return this_sprint_predictability, predictability_data

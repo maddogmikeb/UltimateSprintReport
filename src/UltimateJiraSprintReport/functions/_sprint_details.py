@@ -35,8 +35,15 @@ def _get_status_category_id(status_categories, name) -> str:
     return str(next(x["id"] for x in status_categories if x["name"] == name))
 
 
-def load_sprint_issue_types_statistics(sprint_report) -> pd.DataFrame:
+def load_sprint_issue_types_statistics(
+        sprint_report,
+        on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+        on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+    ) -> pd.DataFrame:
     issue_types = {}
+
+    on_start(None, "Loading Sprint Issue Type Statistics")
 
     for stat_type in [
         "completedIssues",
@@ -44,6 +51,8 @@ def load_sprint_issue_types_statistics(sprint_report) -> pd.DataFrame:
         "puntedIssues",
         "issuesCompletedInAnotherSprint",
     ]:
+        on_iteration(f"Loaded Sprint Issue Type: {stat_type}")
+
         for issue in sprint_report["contents"][stat_type]:
             if issue["typeName"] not in issue_types:
                 issue_types[issue["typeName"]] = {}
@@ -70,13 +79,24 @@ def load_sprint_issue_types_statistics(sprint_report) -> pd.DataFrame:
         lambda x: int(x) if isinstance(x, float) else x
     )
 
+    on_finish("Loaded Sprint Issue Type Statistics")
+
     return df_transposed
 
 
-def load_sprint_statistics(sprint_report, sprint_velocity_statistics, status_categories) -> tuple[DataPoint, DataPoint, DataPoint, DataPoint, DataPoint, tuple[int, int]]:
+def load_sprint_statistics(
+        sprint_report,
+        sprint_velocity_statistics,
+        status_categories,
+        on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+        on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+    ) -> tuple[DataPoint, DataPoint, DataPoint, DataPoint, DataPoint, tuple[int, int]]:
 
     if not sprint_report:
         raise ValueError("Sprint Report not loaded")
+
+    on_start(None, "Loading Sprint Statistics")
 
     to_do_key_id = _get_status_category_id(status_categories, "To Do")
     in_progress_key_id = _get_status_category_id(status_categories, "In Progress")
@@ -132,6 +152,8 @@ def load_sprint_statistics(sprint_report, sprint_velocity_statistics, status_cat
         "#216E4E",
     )
 
+    on_iteration("Got Sprint Statistics")
+
     if sprint_velocity_statistics:
         total_committed = [
             len(sprint_velocity_statistics["allConsideredIssueKeys"]),
@@ -157,15 +179,17 @@ def load_sprint_statistics(sprint_report, sprint_velocity_statistics, status_cat
             ),
         ]
 
+    on_finish("Loaded Sprint Statistics")
+
     return removed, done, completed_outside, in_progress, to_do, total_committed
 
 
 def calculate_sprint_details(
     board_config,
     sprint_report,
-    on_start: Callable[[float, str], None]=None,
-    on_iteration: Callable[[str], None]=None,
-    on_finish: Callable[[str], None]=None,
+    on_start: Callable[[float, str], None]=None,  # pylint: disable=unused-argument
+    on_iteration: Callable[[str], None]=None,  # pylint: disable=unused-argument
+    on_finish: Callable[[str], None]=None,  # pylint: disable=unused-argument
 ) -> dict[str, str]:
 
     if on_start is None:
@@ -221,7 +245,20 @@ def calculate_sprint_details(
     }
 
 
-def load_committed_vs_planned_chart(removed: DataPoint, done: DataPoint, completed_outside: DataPoint, in_progress: DataPoint, to_do: DataPoint, total_committed: tuple[int, int]) -> str:
+def load_committed_vs_planned_chart(
+        removed: DataPoint,
+        done: DataPoint,
+        completed_outside: DataPoint,
+        in_progress: DataPoint,
+        to_do: DataPoint,
+        total_committed: tuple[int, int],
+        on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+        on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+    ) -> str:
+
+    on_start(None, "Loading Committed vs Planned Data")
+
     data_points = [
         removed,
         done,
@@ -279,6 +316,8 @@ def load_committed_vs_planned_chart(removed: DataPoint, done: DataPoint, complet
             )
         )
         bottom += data_point.points if data_point.points > 0 else 0
+
+    on_iteration("Got Committed vs Planned Data")
 
     ax2.set_ylabel("Estimation Stat")
     ax2.vlines(
@@ -412,5 +451,7 @@ def load_committed_vs_planned_chart(removed: DataPoint, done: DataPoint, complet
     image_base64 = base64.b64encode(buf.read()).decode("utf-8")
     buf.close()
     plt.close()
+
+    on_finish("Loaded Committed vs Planned Data")
 
     return image_base64

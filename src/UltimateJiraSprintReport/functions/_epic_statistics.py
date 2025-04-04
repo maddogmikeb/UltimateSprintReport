@@ -8,29 +8,13 @@ from ..services._jira_service import JiraService
 
 
 def calculate_epic_statistics(
-    jira_service: JiraService,
-    board_config,
-    sprint_report,
-    on_start: Callable[[float, str], None]=None,
-    on_iteration: Callable[[str], None]=None,
-    on_finish: Callable[[str], None]=None,
-):
-
-    if on_start is None:
-
-        def on_start(_x, _y):
-            pass
-
-    if on_iteration is None:
-
-        def on_iteration(_y):
-            pass
-
-    if on_finish is None:
-
-        def on_finish(_x):
-            pass
-
+        jira_service: JiraService,
+        board_config,
+        sprint_report,
+        on_start: Callable[[float, str], None]=lambda _, __: "", # pylint: disable=unused-argument
+        on_iteration: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
+        on_finish: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
+    ):
     epic_stats = []
 
     estimation_field = board_config["estimationStatisticConfig"][
@@ -43,6 +27,8 @@ def calculate_epic_statistics(
             epics_being_worked_on.append(issue["key"])
         elif "epic" in issue:
             epics_being_worked_on.append(issue["epic"])
+
+    on_start(len(list(set(epics_being_worked_on))), "Started Checking Epics")
 
     for epic_key in list(set(epics_being_worked_on)):
         on_iteration("Loading issue details: " + epic_key)
@@ -93,5 +79,7 @@ def calculate_epic_statistics(
                 "completed_cnt_perc": done_cnt / total_cnt * 100,
             }
         )
+
+    on_finish("Done checking epics")
 
     return epic_stats

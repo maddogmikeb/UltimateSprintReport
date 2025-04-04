@@ -29,25 +29,10 @@ def load_burndown(
     jira_service: JiraService,
     rapid_view_id: int,
     sprint_id: int,
-    on_start: Callable[[float, str], None]=None,
-    on_iteration: Callable[[str], None]=None,
-    on_finish: Callable[[str], None]=None,
+    on_start: Callable[[float, str], None]=lambda _, __: "", # pylint: disable=unused-argument
+    on_iteration: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
+    on_finish: Callable[[str], None]=lambda _: "", # pylint: disable=unused-argument
 ) -> pd.DataFrame | str:
-
-    if on_start is None:
-
-        def on_start(_x, _y):
-            pass
-
-    if on_iteration is None:
-
-        def on_iteration(_y):
-            pass
-
-    if on_finish is None:
-
-        def on_finish(_x):
-            pass
 
     scope = []
     already_done = set()

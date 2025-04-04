@@ -15,13 +15,17 @@ Classes:
 # pylint: disable=missing-function-docstring, invalid-name
 # pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
 
+from collections.abc import Callable
+
 from tqdm.auto import tqdm
+
 import pandas as pd
 
+from .plugins.plugin import Plugin
+from .plugins.plugin_register import get_plugin
 from .services._jira_service import JiraService
 from .utils._http_utils import parse_url
-from .plugins.plugin_register import get_plugin
-from .plugins.plugin import Plugin
+
 
 class UltimateJiraSprintReport:
     """
@@ -150,6 +154,22 @@ class UltimateJiraSprintReport:
         :return: The UltimateJiraSprintReport instance.
         """
 
+        def on_start(total, text):
+            if not total is None:
+                self.progress_bar.total = total
+            self.progress_bar.set_postfix_str(text)
+            self.progress_bar.refresh()
+
+        def on_iteration(text):
+            self.progress_bar.update(1)
+            self.progress_bar.set_postfix_str(text)
+            self.progress_bar.refresh()
+
+        def on_finish(text):
+            self.progress_bar.n = 100
+            self.progress_bar.set_postfix_str(text)
+            self.progress_bar.refresh()
+
         self.progress_bar = tqdm(total=100, desc="Loading Sprint Details", leave=True)
         self.progress_bar.n = 0
         self.progress_bar.refresh()
@@ -160,57 +180,57 @@ class UltimateJiraSprintReport:
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading status categories")
-        self._load_status_categories()
+        self._load_status_categories(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
         self.progress_bar.n = round((2 / 11) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading sprint report")
-        self._load_sprint_report()
+        self._load_sprint_report(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
         self.progress_bar.n = round((3 / 11) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading velocity statistics")
-        self._load_velocity_statistics()
+        self._load_velocity_statistics(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
         self.progress_bar.n = round((4 / 11) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading board configuration")
-        self._load_board_config()
+        self._load_board_config(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
         self.progress_bar.n = round((5 / 11) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading sprint statistics")
-        self._load_sprint_statistics()
+        self._load_sprint_statistics(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
         self.progress_bar.n = round((6 / 11) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading sprint issue type statistics")
-        self._load_sprint_issue_types_statistics()
+        self._load_sprint_issue_types_statistics(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
         self.progress_bar.n = round((6.5 / 11) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading committed vs planned chart")
-        self._load_committed_vs_planned_chart()
+        self._load_committed_vs_planned_chart(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
         self.progress_bar.n = round((7 / 11) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading sprint details")
-        self._calculate_sprint_details()
+        self._calculate_sprint_details(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
         self.progress_bar.n = round((8 / 11) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading sprint predictability")
-        self._calculate_sprint_predictability()
+        self._calculate_sprint_predictability(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
         self.progress_bar.n = round((9 / 11) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading epic statistics")
-        self._calculate_epic_statistics()
+        self._calculate_epic_statistics(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
         self.progress_bar.n = round((10 / 11) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading burndown chart")
-        self._load_burndown()
+        self._load_burndown(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
         self.progress_bar.n = round((11 / 11) * 100, 2)
         self.progress_bar.refresh()
 
@@ -229,39 +249,90 @@ class UltimateJiraSprintReport:
         )
         return self
 
-    def _load_status_categories(self):
+    def _load_status_categories(
+            self,
+            on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        ):
+        on_start("Loading Statuses")
+        on_iteration("Loading Status Categories")
+
         self.status_categories = self.jira_service.get_status_categories()
+
+        on_iteration("Loading Statuses")
+
         self.statuses = self.jira_service.get_statuses()
+
+        on_finish("Loaded Statuses")
+
         return self
 
-    def _load_sprint_report(self):
+    def _load_sprint_report(
+            self,
+            on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        ):
+        on_start(None, "Loading Sprint Report")
         self.sprint_report = self.jira_service.get_sprint_report(
             self.rapid_view_id, self.sprint_id
         )
+        on_iteration("Loading Sprint Report")
+        on_finish("Loaded Sprint Report")
         return self
 
-    def _load_velocity_statistics(self):
+    def _load_velocity_statistics(
+            self,
+            on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        ):
+        on_start(None, "Loading Velocity Statistics")
+
         self.velocity_statistics = self.jira_service.get_velocity_statistics(
             self.rapid_view_id
         )
+
         if (
             "velocityStatEntries" in self.velocity_statistics
             and str(self.sprint_id) in self.velocity_statistics["velocityStatEntries"]
         ):
+            on_iteration("Loading Velocity Statistics")
             self.sprint_velocity_statistics = self.velocity_statistics[
                 "velocityStatEntries"
             ][str(self.sprint_id)]
+
+        on_finish("Loaded Velocity Statistics")
+
         return self
 
-    def _load_board_config(self):
+    def _load_board_config(
+            self,
+            on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        ):
+        on_start("Loading Board Config")
+
         self.board_config = self.jira_service.get_board_config(self.rapid_view_id)
+
+        on_iteration("Got Board Config")
+
         if "name" in self.board_config:
             self.board_name = self.board_config["name"]
         else:
             self.board_name = "Unknown"
+
+        on_finish("Loaded Board Config")
         return self
 
-    def _load_sprint_statistics(self):
+    def _load_sprint_statistics(
+            self,
+            on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        ):
         from .functions._sprint_details import load_sprint_statistics
 
         (
@@ -272,17 +343,37 @@ class UltimateJiraSprintReport:
             self.completed_outside,
             self.total_committed,
         ) = load_sprint_statistics(
-            self.sprint_report, self.sprint_velocity_statistics, self.status_categories
+            self.sprint_report,
+            self.sprint_velocity_statistics,
+            self.status_categories,
+            on_start,
+            on_iteration,
+            on_finish
         )
         return self
 
-    def _load_sprint_issue_types_statistics(self):
+    def _load_sprint_issue_types_statistics(
+            self,
+            on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        ):
         from .functions._sprint_details import load_sprint_issue_types_statistics
 
-        self.sprint_issue_types_statistics = load_sprint_issue_types_statistics(self.sprint_report)
+        self.sprint_issue_types_statistics = load_sprint_issue_types_statistics(
+            self.sprint_report,
+            on_start,
+            on_iteration,
+            on_finish
+        )
         return self
 
-    def _load_committed_vs_planned_chart(self):
+    def _load_committed_vs_planned_chart(
+            self,
+            on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        ):
         from .functions._sprint_details import load_committed_vs_planned_chart
 
         image_base64 = load_committed_vs_planned_chart(
@@ -291,47 +382,87 @@ class UltimateJiraSprintReport:
             self.completed_outside,
             self.in_progress,
             self.to_do,
-            self.total_committed
+            self.total_committed,
+            on_start,
+            on_iteration,
+            on_finish
         )
 
         self.committed_vs_planned_chart = f'<img id="committed_vs_planned_chart" class="popupable" src="data:image/png;base64,{image_base64}" alt="Committed vs Planned"/>'
 
         return self
 
-    def _calculate_sprint_details(self):
+    def _calculate_sprint_details(
+            self,
+            on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        ):
         from .functions._sprint_details import calculate_sprint_details
 
-        self.sprint_details = calculate_sprint_details(self.board_config, self.sprint_report)
+        self.sprint_details = calculate_sprint_details(
+            self.board_config,
+            self.sprint_report,
+            on_start,
+            on_iteration,
+            on_finish
+        )
         return self
 
-    def _calculate_sprint_predictability(self):
+    def _calculate_sprint_predictability(
+            self,
+            on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        ):
         from .functions._predictability import calculate_predictability
 
         self.this_sprint_predictability, self.predictability_data = calculate_predictability(
             self.velocity_statistics,
             self.sprint_id,
             self.done.points + self.completed_outside.points,
-            self.total_committed[1]
+            self.total_committed[1],
+            on_start,
+            on_iteration,
+            on_finish
         )
         return self
 
-    def _calculate_epic_statistics(self) -> pd.DataFrame | str:
+    def _calculate_epic_statistics(
+            self,
+            on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        ) -> pd.DataFrame | str:
+
         from .functions._epic_statistics import calculate_epic_statistics
 
         self.epic_statistics = calculate_epic_statistics(
             self.jira_service,
             self.board_config,
-            self.sprint_report
+            self.sprint_report,
+            on_start,
+            on_iteration,
+            on_finish
         )
         return self
 
-    def _load_burndown(self) -> pd.DataFrame | str:
+    def _load_burndown(
+            self,
+            on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        ) -> pd.DataFrame | str:
+
         from .functions._burndown import load_burndown
 
         df, image_base64 = load_burndown(
             self.jira_service,
             self.rapid_view_id,
             self.sprint_id,
+            on_start,
+            on_iteration,
+            on_finish
         )
 
         self.burndown_table = df
