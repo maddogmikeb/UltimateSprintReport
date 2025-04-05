@@ -61,5 +61,6 @@
     "python.analysis.diagnosticMode": "workspace",
     "python.pydev.sortImportsOnFormat": "pydev:pep8",
     "python.pydev.lint.pylint.args": "-d duplicate-code",
-    "python.languageServer": "Jedi"
+    "python.languageServer": "Jedi",
+    "secret-stack.promptToScanBeforePush": "30days"
 }
