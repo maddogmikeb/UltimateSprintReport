@@ -5,7 +5,7 @@
 # pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
 
 from collections.abc import Callable
-from concurrent.futures import ThreadPoolExecutor, as_completed
+# from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from tqdm.auto import tqdm
 
@@ -81,33 +81,41 @@ class ZephyrSprintReportPlugin(Plugin):
 
         def process_issue(issue):
             sprint_test_results = []
-            issue_testcases = self.zephyr_service.get_test_cases(issue['key'])
-            for tc in issue_testcases:
-                testcase = self.zephyr_service.get_test_case(tc['self'])
-                status = self.zephyr_service.get_test_case_status(testcase['status']['self'])
-                executions = self.zephyr_service.get_test_case_latest_executions(testcase['key'])
-                if executions['values']:
-                    execution_status = self.zephyr_service.get_test_case_execution_status(executions['values'][0]['testExecutionStatus']['self'])
-                else:
-                    execution_status = {'name': 'Not Executed'}
-                sprint_test_results.append({
-                    "Issue Key": issue['key'],
-                    "Issue Status": issue['fields']['status']['name'],
-                    "Test Case": testcase['key'],
-                    "Status": status['name'],
-                    "Execution Status": execution_status['name']
-                })
-                on_iteration(f"issue={issue['key']}, testcase={testcase['key']}")
+            try:
+                issue_testcases = self.zephyr_service.get_test_cases(issue['key'])
+                for tc in issue_testcases:
+                    testcase = self.zephyr_service.get_test_case(tc['self'])
+                    status = self.zephyr_service.get_test_case_status(testcase['status']['self'])
+                    executions = self.zephyr_service.get_test_case_latest_executions(testcase['key'])
+                    if executions['values']:
+                        execution_status = self.zephyr_service.get_test_case_execution_status(executions['values'][0]['testExecutionStatus']['self'])
+                    else:
+                        execution_status = {'name': 'Not Executed'}
+                    sprint_test_results.append({
+                        "Issue Key": issue['key'],
+                        "Issue Status": issue['fields']['status']['name'],
+                        "Test Case": testcase['key'],
+                        "Status": status['name'],
+                        "Execution Status": execution_status['name']
+                    })
+                    on_iteration(f"issue={issue['key']}, testcase={testcase['key']}")
+            except Exception as ex: # pylint: disable=broad-exception-caught
+                print(ex)
             return sprint_test_results
 
         on_start(len(issues), "Loading Zephyr Test Cases")
 
-        with ThreadPoolExecutor(max_workers=10) as executor:
-            futures = {executor.submit(process_issue, issue): issue for issue in issues}
-            for future in as_completed(futures):
-                result = future.result()
-                processed_issues.append(result)
-                on_iteration("done")
+        # with ThreadPoolExecutor(max_workers=10) as executor:
+        #    futures = {executor.submit(process_issue, issue): issue for issue in issues}
+        #    for future in as_completed(futures):
+        #        result = future.result()
+        #        processed_issues.append(result)
+        #        on_iteration(f"Processed: {len(processed_issues)}")
+        #
+
+        for issue in issues:
+            processed_issues.append(process_issue(issue))
+            on_iteration(f"Processed: {len(processed_issues)}")
 
         on_iteration("Completed")
 

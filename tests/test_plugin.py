@@ -5,7 +5,7 @@ import os
 import sys
 import unittest
 
-from UltimateJiraSprintReport.UltimateJiraSprintReport import UltimateJiraSprintReport
+from UltimateJiraSprintReport import UltimateJiraSprintReport
 from UltimateJiraSprintReport.plugins.zephyr_scale.zephyr_sprint_report_plugin import ZephyrSprintReportPlugin
 import pandas as pd
 
@@ -22,6 +22,7 @@ class TestPlugin(unittest.TestCase):
         self.host = os.getenv("ATLASSIAN_HOST")
         self.zephyr_scale_api_key = os.getenv("ZEPHYR_SCALE_APIKEY")
         self.report = UltimateJiraSprintReport(self.username, self.password, self.host)
+        self.report.connect()
 
     def test_initialization(self):
         self.assertIsInstance(self.report, UltimateJiraSprintReport)

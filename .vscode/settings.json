@@ -1,4 +1,7 @@
 {
+    "secrets.enabledFolders": [
+        "default"
+    ],
     "cSpell.words": [
         "Analysing",
         "apikey",
@@ -57,4 +60,6 @@
     "python.autoComplete.extraPaths": ["${workspaceFolder}/src"],
     "python.analysis.diagnosticMode": "workspace",
     "python.pydev.sortImportsOnFormat": "pydev:pep8",
+    "python.pydev.lint.pylint.args": "-d duplicate-code",
+    "python.languageServer": "Jedi"
 }

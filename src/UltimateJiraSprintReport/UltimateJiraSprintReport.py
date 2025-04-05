@@ -9,11 +9,7 @@ Classes:
 
 """
 
-# pylint: disable=import-outside-toplevel, protected-access
-# pylint: disable=import-error, unused-import
-# pylint: disable=too-few-public-methods, line-too-long
-# pylint: disable=missing-function-docstring, invalid-name
-# pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
+# pylint: disable=import-outside-toplevel, line-too-long, missing-function-docstring, invalid-name, too-many-instance-attributes, too-many-statements
 
 from collections.abc import Callable
 
@@ -78,7 +74,6 @@ class UltimateJiraSprintReport:
             )
 
         self.jira_service = JiraService(username, password, jira_scheme_url)
-        self.jira_service.authenticate()
 
     def _reset(self):
         (
@@ -133,6 +128,10 @@ class UltimateJiraSprintReport:
         show_sprint_issue_types_statistics,  # pylint: disable=unused-import
         show_sprint_test_case_statistics  # pylint: disable=unused-import
     )
+
+    def connect(self):
+        self.jira_service.authenticate()
+        return self
 
     def is_connected(self):
         return self.jira_service.is_connected()

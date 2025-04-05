@@ -7,7 +7,7 @@ import os
 import sys
 import unittest
 
-from UltimateJiraSprintReport.UltimateJiraSprintReport import UltimateJiraSprintReport
+from UltimateJiraSprintReport import UltimateJiraSprintReport
 import pandas as pd
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -22,6 +22,7 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
         self.password = os.getenv("ATLASSIAN_APIKEY")
         self.host = os.getenv("ATLASSIAN_HOST")
         self.report = UltimateJiraSprintReport(self.username, self.password, self.host)
+        self.report.connect()
 
     def test_initialization(self):
         self.assertIsInstance(self.report, UltimateJiraSprintReport)
