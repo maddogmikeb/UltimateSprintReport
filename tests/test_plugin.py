@@ -1,7 +1,6 @@
 # pylint: disable=missing-class-docstring, missing-function-docstring, missing-module-docstring
 # pylint: disable=wrong-import-order, line-too-long
 
-import json
 import os
 import sys
 import unittest
@@ -31,7 +30,8 @@ class TestPlugin(unittest.TestCase):
     def test_show_report(self):
         project = 'FDSEWMSR'
         board_id = 364
-        sprint_id = 945
+        sprint_id = 946
+
         self.report.load(project, board_id, sprint_id)
 
         zephyr_plugin = self.report.load_plugin("zephyr_scale", zephyr_api=self.zephyr_scale_api_key)
@@ -60,11 +60,9 @@ class TestPlugin(unittest.TestCase):
         zephyr_plugin = self.report.load_plugin("zephyr_scale", zephyr_api=self.zephyr_scale_api_key)
         self.assertIsInstance(zephyr_plugin, ZephyrSprintReportPlugin)
 
-        test_cycle = zephyr_plugin.process_test_cycle()
-
-        print('------------------------------')
-        print(json.dumps(test_cycle, indent=2))
-        print('------------------------------')
+        test_cycle, test_cases = zephyr_plugin.process_test_cycle()
+        self.assertIsInstance(test_cycle, pd.DataFrame)
+        self.assertIsInstance(test_cases, pd.DataFrame)
 
 
 if __name__ == '__main__':

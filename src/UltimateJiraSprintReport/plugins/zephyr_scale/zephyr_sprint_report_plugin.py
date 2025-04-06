@@ -7,6 +7,7 @@
 from collections.abc import Callable
 from string import Template
 from tqdm.auto import tqdm
+import warnings
 
 from UltimateJiraSprintReport.plugins.plugin_register import Plugin
 from UltimateJiraSprintReport.plugins.zephyr_scale.services.zephyr_scale_api_service import ZephyrScaleApiService
@@ -101,9 +102,12 @@ class ZephyrSprintReportPlugin(Plugin):
 
         test_cycle = self.zephyr_service.get_test_cycle_filter(_filter)
 
-        if not test_cycle or 'links' not in test_cycle or 'issues' not in test_cycle['links']:
-            print("WARNING: No test cycle linked to sprint, add sprint url to test cycle web links")
-            return
+        if test_cycle is None:
+            warnings.warn("WARNING: No test cycle linked to sprint, add sprint url to test cycle web links")
+            return None, None
+
+        if 'links' not in test_cycle or 'issues' not in test_cycle['links']:
+            raise ValueError("Test cycle has no links")
 
         test_cycle['status'] = self.zephyr_service.get_test_case_status(test_cycle['status']['self'])
         test_cycle['project'] = self.zephyr_service.get_project(test_cycle['project']['self'])
@@ -214,8 +218,8 @@ class ZephyrSprintReportPlugin(Plugin):
         )
 
         return template.substitute(
-            test_cycle_details = self.test_cycle_details.to_html(escape=False).replace("NaN", "-"),
-            test_cycle_data_table = self.test_cycle_test_cases_data_table.to_html(escape=False).replace("NaN", "-")
+            test_cycle_details = self.test_cycle_details.to_html(escape=False).replace("NaN", "-") if self.test_cycle_details is not None else "",
+            test_cycle_data_table = self.test_cycle_test_cases_data_table.to_html(escape=False).replace("NaN", "-") if self.test_cycle_test_cases_data_table is not None else ""
         )
 
     def show_test_case_statistics(self):
