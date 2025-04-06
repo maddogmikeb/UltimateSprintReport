@@ -140,7 +140,7 @@ class ZephyrSprintReportPlugin(Plugin):
             "Name": test_cycle['name'],
             "Project": test_cycle['project']['key'],
             "Status": test_cycle['status']['name'],
-            "Folder": test_cycle['folder']['key'],
+            "Folder": test_cycle['folder']['name'],
             "Description": test_cycle['description'],
             "Start": test_cycle['plannedStartDate'],
             "End": test_cycle['plannedEndDate'],
