@@ -134,7 +134,7 @@ class ZephyrSprintReportPlugin(Plugin):
 
         on_finish("Completed checking test cycles")
 
-        test_cycle_df = pd.DataFrame({
+        test_cycle_df = pd.DataFrame([{
             "Id": test_cycle['id'],
             "Key": test_cycle['key'],
             "Name": test_cycle['name'],
@@ -144,7 +144,7 @@ class ZephyrSprintReportPlugin(Plugin):
             "Description": test_cycle['description'],
             "Start": test_cycle['plannedStartDate'],
             "End": test_cycle['plannedEndDate'],
-        })
+        }])
 
         test_cases_df = pd.DataFrame(test_cases)
 
