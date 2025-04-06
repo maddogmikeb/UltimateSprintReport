@@ -111,7 +111,7 @@ class ZephyrSprintReportPlugin(Plugin):
 
         test_executions = self.zephyr_service.get_test_cycle_test_executions(test_cycle['key'])
 
-        test_cycle['testCases'] = []
+        test_cases = []
 
         for test_execution in test_executions:
             if 'testCase' in test_execution and 'self' in test_execution['testCase']:
@@ -126,11 +126,15 @@ class ZephyrSprintReportPlugin(Plugin):
                 else:
                     test_case['lastExecution'] = None
 
-                test_cycle['testCases'].append(test_case)
+                test_cases.append(test_case)
 
         on_finish("Completed checking test cycles")
 
-        return test_cycle, test_cycle
+        test_cases_df = pd.DataFrame(test_cases)
+
+        test_cycle_df = pd.DataFrame(test_cycle)
+
+        return test_cycle_df, test_cases_df
 
     def process_issues(
             self,
@@ -204,13 +208,14 @@ class ZephyrSprintReportPlugin(Plugin):
             """
             <h2>Sprint Test Cycle Details</h2>
             ${test_cycle_details}
+            <h3>Sprint Test Cycle - Test Cases</h3>
             ${test_cycle_data_table}
             """
         )
 
         return template.substitute(
-            test_cycle_details=self.test_cycle_details, # .to_html(escape=False).replace("NaN", "-")
-            test_cycle_data_table=self.test_cycle_test_cases_data_table # .to_html(escape=False).replace("NaN", "-")
+            test_cycle_details = self.test_cycle_details.to_html(escape=False).replace("NaN", "-"),
+            test_cycle_data_table = self.test_cycle_test_cases_data_table.to_html(escape=False).replace("NaN", "-")
         )
 
     def show_test_case_statistics(self):
@@ -241,6 +246,6 @@ class ZephyrSprintReportPlugin(Plugin):
         )
 
         return template.substitute(
-            test_case_statistics=self.show_test_case_statistics(),
-            test_cycle_statistics=self.show_test_cycle_statistics()
+            test_case_statistics = self.show_test_case_statistics(),
+            test_cycle_statistics = self.show_test_cycle_statistics()
         )
