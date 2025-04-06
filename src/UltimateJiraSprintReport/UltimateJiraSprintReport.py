@@ -77,7 +77,7 @@ class UltimateJiraSprintReport:
 
     def _reset(self):
         self.jira_service.clear_cache()
-        
+
         (
             self.sprint_report_url,
             self.base_url,
@@ -112,7 +112,7 @@ class UltimateJiraSprintReport:
              None, None, None, None, None,
              None, None, None, None, None,
              None, None, None, None, None,
-             None, None, None, None
+             None, None, None
             )
 
     from .reporter.reporter import (
