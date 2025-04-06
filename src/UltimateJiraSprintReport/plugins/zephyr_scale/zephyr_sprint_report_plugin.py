@@ -243,10 +243,10 @@ class ZephyrSprintReportPlugin(Plugin):
             """
             <table>
                 <tr>
-                    <td>{test_case_statistics}</td>
+                    <td>${test_case_statistics}</td>
                 </tr>
                <tr>
-                    <td>{test_cycle_statistics}</td>
+                    <td>${test_cycle_statistics}</td>
                 </tr>
              </table>
             """
