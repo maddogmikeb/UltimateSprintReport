@@ -26,7 +26,6 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
 
     def test_initialization(self):
         self.assertIsInstance(self.report, UltimateJiraSprintReport)
-        print(self.report.show_login_details())
 
     @unittest.skip
     def test_load(self):

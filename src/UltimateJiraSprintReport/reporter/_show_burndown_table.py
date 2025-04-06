@@ -21,6 +21,7 @@ def show_burndown_table(self):
         ${table}
         """
     )
+
     return template.substitute(
         table=self.burndown_table.to_html(escape=False).replace("NaN", "-")
     )

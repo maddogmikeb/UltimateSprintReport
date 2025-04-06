@@ -25,9 +25,11 @@ class Plugin():
     def load_url(self, sprint_report_url: str):
         self.sprint_report_url = sprint_report_url
         self._set_sprint_details(sprint_report_url)
+
         return self
 
     def load(self):
+
         return self
 
     def show_report(self):
@@ -38,4 +40,5 @@ class Plugin():
         self.base_url, self.project, self.rapid_view_id, self.sprint_id = parse_url(
             sprint_report_url
         )
+
         return self

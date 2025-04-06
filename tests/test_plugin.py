@@ -26,7 +26,6 @@ class TestPlugin(unittest.TestCase):
 
     def test_initialization(self):
         self.assertIsInstance(self.report, UltimateJiraSprintReport)
-        print(self.report.show_login_details())
 
     def test_show_report(self):
         project = 'FDSEWMSR'
@@ -42,7 +41,6 @@ class TestPlugin(unittest.TestCase):
 
         output = zephyr_plugin.show_report()
         self.assertIsInstance(output, str)
-        print(output)
 
 
 if __name__ == '__main__':

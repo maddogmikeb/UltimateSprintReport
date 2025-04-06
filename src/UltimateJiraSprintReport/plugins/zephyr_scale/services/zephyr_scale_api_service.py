@@ -32,9 +32,11 @@ class ZephyrScaleApiService():
         cache_key = key
         value = self.cache.get(cache_key) or value_getter()
         self.cache[cache_key] = value
+
         return value
 
     def get_test_cases(self, issue_key: str):
+
         return self.check_cache(
             f"test-case:{issue_key}",
             lambda: json.loads(
@@ -77,6 +79,7 @@ class ZephyrScaleApiService():
         )
 
     def get_test_case_latest_executions(self, test_case_key: str):
+
         return self.check_cache(
             f"test-case-latest-execution:{test_case_key}",
             lambda: json.loads(
@@ -89,6 +92,7 @@ class ZephyrScaleApiService():
         )
 
     def get_test_case_execution_status(self, test_case_execution_status_url: str):
+
         return self.check_cache(
             f"test-case-execution-status:{test_case_execution_status_url}",
             lambda: json.loads(

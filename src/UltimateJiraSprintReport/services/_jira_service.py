@@ -38,6 +38,7 @@ class JiraService:
             method="GET",
             path=f"{self.host}{url}",
         )
+
         return response.content
 
     def authenticate(self):
@@ -47,6 +48,7 @@ class JiraService:
             password=self.password,
             cloud=True,
         )
+
         return self
 
     def is_connected(self):
@@ -56,11 +58,13 @@ class JiraService:
             )
         try:
             self.myself()
-            return True
         except:  # pylint: disable=bare-except
             return False
 
+        return True
+
     def myself(self):
+
         return self.jira.myself()
 
     def check_cache(self, key: str, value_getter: Callable) -> any:
@@ -70,21 +74,25 @@ class JiraService:
         cache_key = key
         value = self.cache.get(cache_key) or value_getter()
         self.cache[cache_key] = value
+
         return value
 
     def get_issue(self, key: str, fields: str="*all"):
+
         return self.check_cache(
             f"key:{key} fields:{fields}",
             lambda: self.jira.issue(key=key, fields=fields)
         )
 
     def jql_query(self, jql: str, fields: str):
+
         return self.jira.jql(
             jql=jql,
             fields=fields,
         )
 
     def get_scope_change_burndown_chart(self, rapid_view_id: int, sprint_id: int):
+
         return self.check_cache(
             f"scope-change-burndown-chart:{rapid_view_id} {sprint_id}",
             lambda: json.loads(
@@ -97,6 +105,7 @@ class JiraService:
         )
 
     def get_board_config(self, rapid_view_id: int):
+
         return self.check_cache(
             f"board-config:{rapid_view_id} ",
             lambda: json.loads(
@@ -108,6 +117,7 @@ class JiraService:
         )
 
     def get_velocity_statistics(self, rapid_view_id: int):
+
         return self.check_cache(
             f"velocity:{rapid_view_id}",
             lambda: json.loads(
@@ -119,6 +129,7 @@ class JiraService:
         )
 
     def get_sprint_report(self, rapid_view_id: int, sprint_id: int):
+
         return self.check_cache(
             f"sprint-report:{rapid_view_id} {sprint_id}",
             lambda: json.loads(
@@ -131,6 +142,7 @@ class JiraService:
         )
 
     def get_status_categories(self):
+
         return self.check_cache(
             "status-categories",
             lambda: json.loads(
@@ -139,6 +151,7 @@ class JiraService:
         )
 
     def get_statuses(self):
+
         return self.check_cache(
             "statuses",
             lambda: json.loads(
@@ -147,6 +160,7 @@ class JiraService:
         )
 
     def get_sprint_issues(self, sprint_id: int):
+
         return self.check_cache(
             f"sprint-issues: {sprint_id}",
             lambda: json.loads(

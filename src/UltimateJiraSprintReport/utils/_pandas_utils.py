@@ -44,6 +44,7 @@ def format_timestamp(timestamp):
     Returns:
         pandas.Timestamp: A pandas datetime object representing the timestamp.
     """
+
     return pd.to_datetime(timestamp / 1000, unit="s")
 
 

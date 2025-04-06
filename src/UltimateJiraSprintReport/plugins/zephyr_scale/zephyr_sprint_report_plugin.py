@@ -5,8 +5,6 @@
 # pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
 
 from collections.abc import Callable
-# from concurrent.futures import ThreadPoolExecutor, as_completed
-
 from tqdm.auto import tqdm
 
 from UltimateJiraSprintReport.plugins.plugin_register import Plugin
@@ -19,6 +17,7 @@ import pandas as pd
 
 
 def flatten(xss):
+
     return [x for xs in xss for x in xs]
 
 
@@ -61,8 +60,7 @@ class ZephyrSprintReportPlugin(Plugin):
             on_finish=on_finish
         )
 
-        self.progress_bar.total = 100
-        self.progress_bar.n = 100
+        self.progress_bar.n = self.progress_bar.total
         self.progress_bar.refresh()
         self.progress_bar.set_postfix_str("Completed")
         self.progress_bar.close()
@@ -101,17 +99,10 @@ class ZephyrSprintReportPlugin(Plugin):
                     on_iteration(f"issue={issue['key']}, testcase={testcase['key']}")
             except Exception as ex: # pylint: disable=broad-exception-caught
                 print(ex)
+
             return sprint_test_results
 
         on_start(len(issues), "Loading Zephyr Test Cases")
-
-        # with ThreadPoolExecutor(max_workers=10) as executor:
-        #    futures = {executor.submit(process_issue, issue): issue for issue in issues}
-        #    for future in as_completed(futures):
-        #        result = future.result()
-        #        processed_issues.append(result)
-        #        on_iteration(f"Processed: {len(processed_issues)}")
-        #
 
         for issue in issues:
             processed_issues.append(process_issue(issue))
@@ -144,4 +135,5 @@ class ZephyrSprintReportPlugin(Plugin):
         return df
 
     def show_report(self):
+
         return "<h2>Sprint Test Case Statistics</h2>" + self.test_case_statistics_data_table.to_html(escape=False)

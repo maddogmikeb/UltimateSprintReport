@@ -24,8 +24,10 @@ def calculate_predictability_score(estimated_points, completed_points):
     """
     if estimated_points == 0:
         return None, "-"
+
     predictability_score = abs(1 - (completed_points / estimated_points))
     stars = calculate_predictability_score_stars(predictability_score)
+
     return predictability_score, stars
 
 
@@ -42,12 +44,17 @@ def calculate_predictability_score_stars(predictability_score: float):
     """
     if predictability_score <= 0.2:
         return "★★★★★"
+
     if predictability_score <= 0.4:
         return "★★★★"
+
     if predictability_score <= 0.6:
         return "★★★"
+
     if predictability_score <= 0.8:
         return "★★"
+
     if predictability_score <= 1.0:
         return "★"
+
     return "☆"

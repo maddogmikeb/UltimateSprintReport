@@ -18,6 +18,7 @@ def show_sprint_test_case_statistics(self):
         ${data_table}
     """
     )
+
     return template.substitute(
         data_table=self.test_case_statistics_data_table.to_html(escape=False).replace(
             "NaN", "-"

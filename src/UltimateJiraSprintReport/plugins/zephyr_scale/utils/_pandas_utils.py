@@ -4,7 +4,8 @@
 
 TEST_APP = "com.atlassian.plugins.atlassian-connect-plugin:com.kanoah.test-manager__main-project-page"
 
-def make_testcase_clickable(val, base_url, project):
-    if val == "":
+def make_testcase_clickable(val: str, base_url: str, project: str):
+    if len(val) == 0:
         return val
+
     return f'<a target="_blank" href="{base_url}/projects/{project}?selectedItem={TEST_APP}#!/v2/testCase/{val}">{val}</a>'

@@ -21,6 +21,7 @@ def _find_status_by_id(statuses, status_id: int):
     for status in statuses:
         if int(status["id"]) == int(status_id):
             return status
+
     return {"name": "Unknown"}
 
 
@@ -72,17 +73,20 @@ def load_burndown(
             )
             if change["key"] in already_done:
                 continue
+
             if (
                 "column" in change
                 and "done" in change["column"]
                 and timestamp <= sprint_start
             ):
                 already_done.add(change["key"])
+
             if change["key"] not in already_checked_for_resolution:
                 issue = jira_service.get_issue(
                     key=change["key"] #, fields="resolutiondate"
                 )
                 already_checked_for_resolution.add(change["key"])
+
                 if (
                     issue
                     and "fields" in issue
@@ -96,6 +100,7 @@ def load_burndown(
                         ).timestamp()
                         * 1000
                     )
+
                     if resolution_epoch <= sprint_start:
                         already_done.add(change["key"])
 
@@ -129,6 +134,7 @@ def load_burndown(
                     if "statC" in change and "newValue" in change["statC"]
                     else np.nan
                 )
+
                 if change["key"] in [x["key"] for x in scope]:
                     for _, item in enumerate(scope):
                         if item["key"] == change["key"]:
@@ -161,11 +167,13 @@ def load_burndown(
                                 else:
                                     statistic += -1 * float(item["statistic"])
                             last_status = item["eventDetail"]
+
                 if last_status == "Issue removed from sprint":
                     if "added" in change and change["added"] is True:
                         pass  # if being re-added to the sprint
                     else:
                         continue
+
                 if "column" in change and "done" in change["column"]:
                     if not np.isnan(statistic) and statistic != 0:
                         statistic = -1 * abs(statistic)  # ensure it's burning down
@@ -298,12 +306,15 @@ def load_burndown(
 
     for ts, closures in scope_change_burndown_chart["openCloseChanges"].items():
         timestamp = int(ts)
+
         for closure in closures:
             if "operation" not in closure:
                 continue
+
             operation = closure["operation"].lower()
             by = closure["userDisplayNameHtml"]
             name = re.search(r">(.*?)<", by).group(1)
+
             if timestamp == complete_time:
                 operation = "ended"
                 scope.append(
@@ -338,6 +349,7 @@ def load_burndown(
                 "statistic": np.nan,
             }
         )
+
     scope.append(
         {
             "timestamp": sprint_start + 0.1,
@@ -347,6 +359,7 @@ def load_burndown(
             "statistic": np.nan,
         }
     )
+
     if now and ((complete_time and now < complete_time) or not complete_time):
         scope.append(
             {

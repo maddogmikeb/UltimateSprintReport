@@ -131,18 +131,22 @@ class UltimateJiraSprintReport:
 
     def connect(self):
         self.jira_service.authenticate()
+
         return self
 
     def is_connected(self):
+
         return self.jira_service.is_connected()
 
     def load_plugin(self, plugin_name, **kwargs) -> Plugin:
         plugin = get_plugin(plugin_name, self.jira_service, **kwargs)
         plugin.load_url(self.sprint_report_url)
+
         return plugin
 
     def load(self, project: str, board_id: int, sprint_id: int):
         sprint_url = f"{self.jira_service.host}jira/software/c/projects/{project}/boards/{board_id}/reports/sprint-retrospective?sprint={sprint_id}"
+
         return self.load_url(sprint_url)
 
     def load_url(self, sprint_report_url: str):
@@ -163,14 +167,16 @@ class UltimateJiraSprintReport:
             self.progress_bar.refresh()
 
         def on_iteration(text):
-            #self.progress_bar.update(1)
+            # self.progress_bar.update(1)
             self.progress_bar.set_postfix_str(text)
             self.progress_bar.refresh()
 
         def on_finish(text):
-            #self.progress_bar.n = 100
+            # self.progress_bar.n = 100
             self.progress_bar.set_postfix_str(text)
             self.progress_bar.refresh()
+
+        self._reset()
 
         self.progress_bar = tqdm(total=100, desc="Loading Sprint Details", leave=True)
         self.progress_bar.n = 0
@@ -236,11 +242,11 @@ class UltimateJiraSprintReport:
         self.progress_bar.n = round((11 / 11) * 100, 2)
         self.progress_bar.refresh()
 
-        self.progress_bar.total = 100
-        self.progress_bar.n = 100
+        self.progress_bar.n = self.progress_bar.total
         self.progress_bar.refresh()
         self.progress_bar.set_postfix_str("Completed")
         self.progress_bar.close()
+
         return self
 
     def _set_sprint_details(self, sprint_report_url: str):
@@ -252,6 +258,7 @@ class UltimateJiraSprintReport:
         self.board_name = (
             self.board_config["name"] if "name" in self.board_config else "Unknown"
         )
+
         return self
 
     def _load_status_categories(
@@ -285,6 +292,7 @@ class UltimateJiraSprintReport:
         )
         on_iteration("Loading Sprint Report")
         on_finish("Loaded Sprint Report")
+
         return self
 
     def _load_velocity_statistics(
@@ -330,6 +338,7 @@ class UltimateJiraSprintReport:
             self.board_name = "Unknown"
 
         on_finish("Loaded Board Config")
+
         return self
 
     def _load_sprint_statistics(
@@ -355,6 +364,7 @@ class UltimateJiraSprintReport:
             on_iteration,
             on_finish
         )
+
         return self
 
     def _load_sprint_issue_types_statistics(
@@ -371,6 +381,7 @@ class UltimateJiraSprintReport:
             on_iteration,
             on_finish
         )
+
         return self
 
     def _load_committed_vs_planned_chart(
@@ -412,6 +423,7 @@ class UltimateJiraSprintReport:
             on_iteration,
             on_finish
         )
+
         return self
 
     def _calculate_sprint_predictability(
@@ -431,6 +443,7 @@ class UltimateJiraSprintReport:
             on_iteration,
             on_finish
         )
+
         return self
 
     def _calculate_epic_statistics(
@@ -450,6 +463,7 @@ class UltimateJiraSprintReport:
             on_iteration,
             on_finish
         )
+
         return self
 
     def _load_burndown(

@@ -15,6 +15,7 @@ def calculate_epic_statistics(
         on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
         on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
     ):
+
     epic_stats = []
 
     estimation_field = board_config["estimationStatisticConfig"][

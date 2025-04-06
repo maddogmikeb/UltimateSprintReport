@@ -71,6 +71,7 @@ def show_committed_vs_planned(self):
         </table>
     """
     )
+
     return template.substitute(
         total_committed_count=self.total_committed[0],
         total_committed_estimate=f"{self.total_committed[1]:.1f}",

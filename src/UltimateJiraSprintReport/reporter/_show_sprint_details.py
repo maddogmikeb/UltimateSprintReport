@@ -46,6 +46,7 @@ def show_sprint_details(self):
         </table>
     """
     )
+
     return template.substitute(
         board_name=self.board_name,
         sprint_report_url=self.sprint_report_url,

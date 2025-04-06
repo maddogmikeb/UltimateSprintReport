@@ -13,6 +13,7 @@ def show_login_details(self):
         str: HTML string containing the user's display name and avatar.
     """
     me = self.jira_service.myself()
+
     template = Template(
         """
         <table>
@@ -24,6 +25,7 @@ def show_login_details(self):
         </table>
     """
     )
+
     return template.substitute(
         display_name=me["displayName"],
         avatar_url=me["avatarUrls"]["32x32"]

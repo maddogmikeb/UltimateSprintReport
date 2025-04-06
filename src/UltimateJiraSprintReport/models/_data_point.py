@@ -24,12 +24,15 @@ class DataPoint:
         self.edge_color = edge_color
 
     def __repr__(self):
+
         return str({"name": self.name, "count": self.count, "points": self.points})
 
     def get_values(self):
+
         return [self.count, self.points]
 
     def get_patch(self):
+
         return Patch(
             facecolor=self.color,
             edgecolor=self.edge_color,

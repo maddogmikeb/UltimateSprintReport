@@ -16,6 +16,9 @@ plugins = {
 def get_plugin(plugin_name: str, jira_service: JiraService, **kwargs) -> Plugin:
     # # Very hacky way of plugins but only for so works for now
     # # be great to make this based on file location
+    if not plugin_name in plugins:
+        raise ValueError("Plugin not found")
+
     instance = plugins[plugin_name].__new__(plugins[plugin_name], jira_service)
     instance.__init__(jira_service, **kwargs)  # pylint: disable=unnecessary-dunder-call
 

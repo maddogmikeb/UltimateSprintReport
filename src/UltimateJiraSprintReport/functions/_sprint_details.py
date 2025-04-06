@@ -31,6 +31,7 @@ def _calculate_estimates(sprint_report, status_category_id) -> tuple[int, int]:
 
 
 def _get_status_category_id(status_categories, name) -> str:
+
     return str(next(x["id"] for x in status_categories if x["name"] == name))
 
 
@@ -184,27 +185,14 @@ def load_sprint_statistics(
 
 
 def calculate_sprint_details(
-    board_config,
-    sprint_report,
-    on_start: Callable[[float, str], None]=None,  # pylint: disable=unused-argument
-    on_iteration: Callable[[str], None]=None,  # pylint: disable=unused-argument
-    on_finish: Callable[[str], None]=None,  # pylint: disable=unused-argument
-) -> dict[str, str]:
+        board_config,
+        sprint_report,
+        on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+        on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+    ) -> dict[str, str]:
 
-    if on_start is None:
-
-        def on_start(_x, _y):
-            pass
-
-    if on_iteration is None:
-
-        def on_iteration(_y):
-            pass
-
-    if on_finish is None:
-
-        def on_finish(_x):
-            pass
+    on_start(None, "Calculating sprint details")
 
     start = datetime.strptime(
         sprint_report["sprint"]["isoStartDate"], "%Y-%m-%dT%H:%M:%S%z"
@@ -213,6 +201,8 @@ def calculate_sprint_details(
     end = datetime.strptime(
         sprint_report["sprint"]["isoEndDate"], "%Y-%m-%dT%H:%M:%S%z"
     ).date()
+
+    on_iteration("Calculated sprint start and end")
 
     weekmask = " ".join(
         [
@@ -229,10 +219,14 @@ def calculate_sprint_details(
         ]
     ]
 
+    on_iteration("Calculated sprint workdays and holidays")
+
     days = np.busday_count(start, end, holidays=holidays, weekmask=weekmask)
 
     if days > 1:
         days = days + 1  # include the start day
+
+    on_finish("Calculated sprint details")
 
     return {
         "name": str(sprint_report["sprint"]["name"]),

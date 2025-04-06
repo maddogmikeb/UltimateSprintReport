@@ -18,6 +18,7 @@ def show_sprint_issue_types_statistics(self):
         ${data_table}
     """
     )
+
     return template.substitute(
         data_table=self.sprint_issue_types_statistics.to_html()
     )
