@@ -79,10 +79,15 @@ class JiraService:
 
     def get_issue(self, key: str, fields: str="*all"):
 
-        return self.check_cache(
+        issue = self.check_cache(
             f"key:{key} fields:{fields}",
             lambda: self.jira.issue(key=key, fields=fields)
         )
+
+        # store it as id as well
+        self.check_cache(f"key:{issue['id']} fields:*all", issue)
+
+        return issue
 
     def jql_query(self, jql: str, fields: str):
 
@@ -161,7 +166,7 @@ class JiraService:
 
     def get_sprint_issues(self, sprint_id: int):
 
-        return self.check_cache(
+        issues = self.check_cache(
             f"sprint-issues: {sprint_id}",
             lambda: json.loads(
                 self._get(
@@ -169,3 +174,10 @@ class JiraService:
                 )
             )
         )['issues']
+
+        # store each issue individually also to improve caching
+        for issue in issues:
+            self.check_cache(f"key:{issue['key']} fields:*all", issue)
+            self.check_cache(f"key:{issue['id']} fields:*all", issue)
+
+        return issues

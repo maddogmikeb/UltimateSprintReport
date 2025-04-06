@@ -1,6 +1,7 @@
 # pylint: disable=missing-class-docstring, missing-function-docstring, missing-module-docstring
 # pylint: disable=wrong-import-order, line-too-long
 
+import json
 import os
 import sys
 import unittest
@@ -41,6 +42,29 @@ class TestPlugin(unittest.TestCase):
 
         output = zephyr_plugin.show_report()
         self.assertIsInstance(output, str)
+
+    def test_test_cycles(self):
+        project = 'FDSEWMSR'
+        board_id = 364
+        sprint_id = 945
+
+        sprint_report_url = (
+            f"{self.report.jira_service.host}"
+            f"jira/software/c/projects/{project}"
+            f"/boards/{board_id}"
+            f"/reports/sprint-retrospective?sprint={sprint_id}"
+        )
+
+        self.report._set_sprint_details(sprint_report_url) # pylint: disable=protected-access
+
+        zephyr_plugin = self.report.load_plugin("zephyr_scale", zephyr_api=self.zephyr_scale_api_key)
+        self.assertIsInstance(zephyr_plugin, ZephyrSprintReportPlugin)
+
+        test_cycle = zephyr_plugin.process_test_cycle()
+
+        print('------------------------------')
+        print(json.dumps(test_cycle, indent=2))
+        print('------------------------------')
 
 
 if __name__ == '__main__':

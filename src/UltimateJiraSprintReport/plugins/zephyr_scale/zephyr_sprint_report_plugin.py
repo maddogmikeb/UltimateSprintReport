@@ -67,6 +67,58 @@ class ZephyrSprintReportPlugin(Plugin):
 
         return self
 
+    def process_test_cycle(
+            self,
+            on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        ):
+
+        on_start(None, "Searching for test cycle linked to sprint report")
+
+        def _filter(test_cycle):
+            on_iteration(f"Checking test cycle: {test_cycle['key'] if 'key' in test_cycle else test_cycle}")
+
+            if 'links' in test_cycle and 'webLinks' in test_cycle['links']:
+                for link in test_cycle['links']['webLinks']:
+                    if link['url'].startswith(self.sprint_report_url):
+                        return True
+
+            return False
+
+        test_cycle = self.zephyr_service.get_test_cycle_filter(_filter)
+
+        if not test_cycle or 'links' not in test_cycle or 'issues' not in test_cycle['links']:
+            print("WARNING: No test cycle linked to sprint, add sprint url to test cycle web links")
+            return
+
+        test_cycle['status'] = self.zephyr_service.get_test_case_status(test_cycle['status']['self'])
+        test_cycle['project'] = self.zephyr_service.get_project(test_cycle['project']['self'])
+        test_cycle['folder'] = self.zephyr_service.get_folder(test_cycle['folder']['self'])
+
+        test_executions = self.zephyr_service.get_test_cycle_test_executions(test_cycle['key'])
+
+        test_cycle['testCases'] = []
+
+        for test_execution in test_executions:
+            if 'testCase' in test_execution and 'self' in test_execution['testCase']:
+                test_case = self.zephyr_service.get_test_case(test_execution['testCase']['self'])
+
+                lastExec = self.zephyr_service.get_test_case_latest_executions(test_case['key'])
+                if lastExec and 'values' in lastExec and len(lastExec['values']) == 1:
+                    test_case['lastExecution'] = lastExec['values'][0]
+                    test_case['lastExecution']['testExecutionStatus'] = self.zephyr_service.get_test_case_execution_status(
+                        test_case['lastExecution']['testExecutionStatus']['self']
+                    )
+                else:
+                    test_case['lastExecution'] = None
+
+                test_cycle['testCases'].append(test_case)
+
+        on_finish("Completed checking test cycles")
+
+        return test_cycle
+
     def process_issues(
             self,
             on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument

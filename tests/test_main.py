@@ -27,7 +27,6 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
     def test_initialization(self):
         self.assertIsInstance(self.report, UltimateJiraSprintReport)
 
-    @unittest.skip
     def test_load(self):
         project = 'FDSEWMSR'
         board_id = 401

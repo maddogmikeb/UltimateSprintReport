@@ -78,6 +78,36 @@ class ZephyrScaleApiService():
             )
         )
 
+    def get_project(self, project_url: str):
+        if not project_url.startswith(ZEPHYR_API_URL):
+            raise ValueError("Invalid host or differs from Zephyr")
+
+        return self.check_cache(
+            f"test-project:{project_url}",
+            lambda: json.loads(
+                requests.get(
+                    project_url,
+                    headers=self.headers,
+                    timeout=5
+                ).text
+            )
+        )
+
+    def get_folder(self, folder_url: str):
+        if not folder_url.startswith(ZEPHYR_API_URL):
+            raise ValueError("Invalid host or differs from Zephyr")
+
+        return self.check_cache(
+            f"test-folder:{folder_url}",
+            lambda: json.loads(
+                requests.get(
+                    folder_url,
+                    headers=self.headers,
+                    timeout=5
+                ).text
+            )
+        )
+
     def get_test_case_latest_executions(self, test_case_key: str):
 
         return self.check_cache(
@@ -103,3 +133,91 @@ class ZephyrScaleApiService():
                 ).text
             )
         )
+
+    def get_test_cycles(self):
+
+        def get():
+            response = json.loads(
+                requests.get(
+                    f"{ZEPHYR_API_URL}/testcycles?maxResults=50",
+                    headers=self.headers,
+                    timeout=5
+                ).text
+            )
+            results = response['values']
+            while not response['isLast']:
+                response = json.loads(
+                    requests.get(
+                        response['next'],
+                        headers=self.headers,
+                        timeout=5
+                    ).text
+                )
+                results.append(response['values'])
+
+            return results
+
+        return self.check_cache("test-cycles filter", get)
+
+    def get_test_cycle_filter(self, test_cycle_filter: Callable[[any], bool]):
+
+        def get(test_cycle_filter):
+            response = json.loads(
+                requests.get(
+                    f"{ZEPHYR_API_URL}/testcycles?maxResults=50",
+                    headers=self.headers,
+                    timeout=5
+                ).text
+            )
+            results = response['values']
+
+            for result in response['values']:
+                if test_cycle_filter(result):
+                    return result
+
+            while not response['isLast']:
+                response = json.loads(
+                    requests.get(
+                        response['next'],
+                        headers=self.headers,
+                        timeout=5
+                    ).text
+                )
+
+                for result in response['values']:
+                    if test_cycle_filter(result):
+                        return result
+
+                results.append(response['values'])
+
+            return None
+
+        return self.check_cache(
+            f"test-cycle-filter{str(test_cycle_filter)}",
+            lambda: get(test_cycle_filter)
+        )
+
+    def get_test_cycle_test_executions(self, test_cycle_key: str):
+
+        def get():
+            response = json.loads(
+                requests.get(
+                    f"{ZEPHYR_API_URL}/testexecutions/?maxResults=50&testCycle={test_cycle_key}",
+                    headers=self.headers,
+                    timeout=5
+                ).text
+            )
+            results = response['values']
+            while not response['isLast']:
+                response = json.loads(
+                    requests.get(
+                        response['next'],
+                        headers=self.headers,
+                        timeout=5
+                    ).text
+                )
+                results.append(response['values'])
+
+            return results
+
+        return self.check_cache(f"test_cycle_test_executions: {test_cycle_key}", get)
