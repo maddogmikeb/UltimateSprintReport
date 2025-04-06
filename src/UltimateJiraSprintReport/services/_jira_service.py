@@ -1,6 +1,7 @@
 # pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
 
 from collections.abc import Callable
+from copy import deepcopy
 import json
 
 from atlassian import Jira
@@ -85,7 +86,8 @@ class JiraService:
         )
 
         # store it as id as well
-        self.check_cache(f"key:{issue['id']} fields:*all", lambda: issue)
+        i = deepcopy(issue)
+        self.check_cache(f"key:{issue['key']} fields:*all", lambda i=i: i)
 
         return issue
 
@@ -177,7 +179,8 @@ class JiraService:
 
         # store each issue individually also to improve caching
         for issue in issues:
-            self.check_cache(f"key:{issue['key']} fields:*all", lambda: issue)
-            self.check_cache(f"key:{issue['id']} fields:*all", lambda: issue)
+            i = deepcopy(issue)
+            self.check_cache(f"key:{issue['key']} fields:*all", lambda i=i: i)
+            self.check_cache(f"key:{issue['id']} fields:*all", lambda i=i: i)
 
         return issues

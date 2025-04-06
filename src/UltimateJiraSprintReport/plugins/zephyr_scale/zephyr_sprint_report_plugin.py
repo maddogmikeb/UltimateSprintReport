@@ -67,7 +67,7 @@ class ZephyrSprintReportPlugin(Plugin):
             on_finish=on_finish
         )
 
-        self.test_cycle_details, self.test_cycle_test_cases_data_table = self. process_test_cycle(
+        self.test_cycle_details, self.test_cycle_test_cases_data_table = self.process_test_cycle(
             on_start=on_start,
             on_iteration=on_iteration,
             on_finish=on_finish
