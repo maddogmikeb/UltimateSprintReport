@@ -217,9 +217,12 @@ class ZephyrSprintReportPlugin(Plugin):
             """
         )
 
+        if self.test_cycle_details is None:
+            return "No test cycle linked to sprint report"
+
         return template.substitute(
-            test_cycle_details = self.test_cycle_details.to_html(escape=False).replace("NaN", "-") if self.test_cycle_details is not None else "",
-            test_cycle_data_table = self.test_cycle_test_cases_data_table.to_html(escape=False).replace("NaN", "-") if self.test_cycle_test_cases_data_table is not None else ""
+            test_cycle_details = self.test_cycle_details.to_html(escape=False).replace("NaN", "-"),
+            test_cycle_data_table = self.test_cycle_test_cases_data_table.to_html(escape=False).replace("NaN", "-")
         )
 
     def show_test_case_statistics(self):
