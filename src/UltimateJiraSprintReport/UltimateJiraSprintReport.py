@@ -76,8 +76,9 @@ class UltimateJiraSprintReport:
         self.jira_service = JiraService(username, password, jira_scheme_url)
 
     def _reset(self):
+        self.jira_service.clear_cache()
+        
         (
-            self.jira_service,
             self.sprint_report_url,
             self.base_url,
             self.project,
