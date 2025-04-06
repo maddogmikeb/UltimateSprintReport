@@ -85,7 +85,7 @@ class JiraService:
         )
 
         # store it as id as well
-        self.check_cache(f"key:{issue['id']} fields:*all", issue)
+        self.check_cache(f"key:{issue['id']} fields:*all", lambda: issue)
 
         return issue
 
@@ -177,7 +177,7 @@ class JiraService:
 
         # store each issue individually also to improve caching
         for issue in issues:
-            self.check_cache(f"key:{issue['key']} fields:*all", issue)
-            self.check_cache(f"key:{issue['id']} fields:*all", issue)
+            self.check_cache(f"key:{issue['key']} fields:*all", lambda: issue)
+            self.check_cache(f"key:{issue['id']} fields:*all", lambda: issue)
 
         return issues
