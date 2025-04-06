@@ -5,6 +5,7 @@
 # pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
 
 from collections.abc import Callable
+from string import Template
 from tqdm.auto import tqdm
 
 from UltimateJiraSprintReport.plugins.plugin_register import Plugin
@@ -26,9 +27,15 @@ class ZephyrSprintReportPlugin(Plugin):
     def __init__(self, jira_service: JiraService, zephyr_api: str):
         super().__init__(jira_service)
         self.zephyr_service = ZephyrScaleApiService(zephyr_api)
-        self.test_case_statistics_data_table = None
 
-        self.progress_bar = None
+        (
+            self.progress_bar,
+            self.test_case_statistics_data_table,
+            self.test_cycle_details,
+            self.test_cycle_test_cases_data_table
+         ) = (
+            None, None, None, None
+        )
 
     def load(self):
 
@@ -55,6 +62,12 @@ class ZephyrSprintReportPlugin(Plugin):
             self.progress_bar.refresh()
 
         self.test_case_statistics_data_table = self.process_issues(
+            on_start=on_start,
+            on_iteration=on_iteration,
+            on_finish=on_finish
+        )
+
+        self.test_cycle_details, self.test_cycle_test_cases_data_table = self. process_test_cycle(
             on_start=on_start,
             on_iteration=on_iteration,
             on_finish=on_finish
@@ -117,7 +130,7 @@ class ZephyrSprintReportPlugin(Plugin):
 
         on_finish("Completed checking test cycles")
 
-        return test_cycle
+        return test_cycle, test_cycle
 
     def process_issues(
             self,
@@ -149,7 +162,7 @@ class ZephyrSprintReportPlugin(Plugin):
                         "Execution Status": execution_status['name']
                     })
                     on_iteration(f"issue={issue['key']}, testcase={testcase['key']}")
-            except Exception as ex: # pylint: disable=broad-exception-caught
+            except Exception as ex:  # pylint: disable=broad-exception-caught
                 print(ex)
 
             return sprint_test_results
@@ -186,6 +199,48 @@ class ZephyrSprintReportPlugin(Plugin):
 
         return df
 
+    def show_test_cycle_statistics(self):
+        template = Template(
+            """
+            <h2>Sprint Test Cycle Details</h2>
+            ${test_cycle_details}
+            ${test_cycle_data_table}
+            """
+        )
+
+        return template.substitute(
+            test_cycle_details=self.test_cycle_details, # .to_html(escape=False).replace("NaN", "-")
+            test_cycle_data_table=self.test_cycle_test_cases_data_table # .to_html(escape=False).replace("NaN", "-")
+        )
+
+    def show_test_case_statistics(self):
+        template = Template(
+            """
+            <h2>Sprint Test Case Statistics</h2>
+            ${test_case_statistics_data_table}
+            """
+        )
+
+        return template.substitute(
+            test_case_statistics_data_table = self.test_case_statistics_data_table.to_html(escape=False).replace("NaN", "-")
+        )
+
     def show_report(self):
 
-        return "<h2>Sprint Test Case Statistics</h2>" + self.test_case_statistics_data_table.to_html(escape=False)
+        template = Template(
+            """
+            <table>
+                <tr>
+                    <td>{test_case_statistics}</td>
+                </tr>
+               <tr>
+                    <td>{test_cycle_statistics}</td>
+                </tr>
+             </table>
+            """
+        )
+
+        return template.substitute(
+            test_case_statistics=self.show_test_case_statistics(),
+            test_cycle_statistics=self.show_test_cycle_statistics()
+        )
