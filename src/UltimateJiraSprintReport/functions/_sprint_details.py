@@ -51,14 +51,14 @@ def load_sprint_issue_types_statistics(
         "puntedIssues",
         "issuesCompletedInAnotherSprint",
     ]:
-        on_iteration(f"Loaded Sprint Issue Type: {stat_type}")
-
         for issue in sprint_report["contents"][stat_type]:
             if issue["typeName"] not in issue_types:
                 issue_types[issue["typeName"]] = {}
             if stat_type not in issue_types[issue["typeName"]]:
                 issue_types[issue["typeName"]][stat_type] = 0
             issue_types[issue["typeName"]][stat_type] += 1
+
+    on_iteration("Loaded Sprint Issue Types")
 
     df = pd.DataFrame(issue_types)
     df = df.fillna("-").infer_objects()

@@ -30,7 +30,7 @@ class TestPlugin(unittest.TestCase):
     def test_show_report(self):
         project = 'FDSEWMSR'
         board_id = 364
-        sprint_id = 945
+        sprint_id = 944
 
         self.report.load(project, board_id, sprint_id)
 

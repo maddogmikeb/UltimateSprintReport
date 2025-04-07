@@ -52,17 +52,17 @@ class ZephyrSprintReportPlugin(Plugin):
                     self.progress_bar.total = self.progress_bar.total + total
                 else:
                     self.progress_bar.total = total
-            self.progress_bar.set_postfix_str(text)
-            self.progress_bar.refresh()
+            if self.progress_bar.postfix != text:
+                self.progress_bar.set_postfix_str(text, refresh=True)
 
         def on_iteration(text):
             self.progress_bar.update(1)
-            self.progress_bar.set_postfix_str(text)
-            self.progress_bar.refresh()
+            if self.progress_bar.postfix != text:
+                self.progress_bar.set_postfix_str(text, refresh=True)
 
         def on_finish(text):
-            self.progress_bar.set_postfix_str(text)
-            self.progress_bar.refresh()
+            if self.progress_bar.postfix != text:
+                self.progress_bar.set_postfix_str(text, refresh=True)
 
         self.test_case_statistics_data_table = self.process_issues(
             on_start=on_start,
@@ -87,7 +87,8 @@ class ZephyrSprintReportPlugin(Plugin):
 
             not_in_cycle['Issue Key'] = "*" + not_in_cycle['Issue Key']
 
-            df = pd.concat([not_in_cycle, self.test_cycle_test_cases_data_table]).reset_index(drop=True)
+            df = pd.concat([not_in_cycle, self.test_cycle_test_cases_data_table])
+            df = df.sort_values(by=['Execution Status'], ascending=False).reset_index(drop=True)
 
             self.test_case_statistics_data_table = None # we dont need this anymore
             self.test_cycle_test_cases_data_table = df
@@ -183,17 +184,12 @@ class ZephyrSprintReportPlugin(Plugin):
 
         df["Issue Key"] = df["Issue Key"].apply(lambda x: make_clickable(x, self.base_url))
         df["Test Case"] = df["Test Case"].apply(lambda x: make_testcase_clickable(x, self.base_url, self.project))
-        df = df.groupby(['Issue Key', 'Issue Status']).agg({
+        df = df.groupby(['Issue Key', 'Issue Status'], as_index=False).agg({
             'Test Case': lambda x: ', '.join(x.sort_values()) if len(x) > 0 else 'No Test Cases',
             'Status': lambda x: (x == 'Approved').sum() / len(x),
             'Execution Status': lambda x: (x == 'Pass').sum() / len(x)
         })
-        df = df.sort_values(by=['Execution Status'], ascending=False).reset_index()
-        df.loc['Total'] = df.mean(numeric_only=True, axis=0)
-        df.loc['Total'] = df.loc['Total'].replace(np.nan, '', regex=True)
-
-        df['Status'] = df['Status'].apply(lambda x: f"{x:.1%}")
-        df['Execution Status'] = df['Execution Status'].apply(lambda x: f"{x:.1%}")
+        df = df.sort_values(by=['Execution Status'], ascending=False).reset_index(drop=True)
 
         return test_cycle_df, df
 
@@ -236,29 +232,23 @@ class ZephyrSprintReportPlugin(Plugin):
 
         for issue in issues:
             processed_issues.append(process_issue(issue))
-            on_iteration(f"Processed: {len(processed_issues)}")
-
-        on_iteration("Completed")
+            on_iteration(f"Processed: {issue['key']}")
 
         processed_issues = flatten(processed_issues)
         if len(processed_issues) == 0:
             # empty data frame - no tests
+            on_finish("Done")
             return pd.DataFrame({'Issue Key': [], 'Test Case': [], 'Status': [], 'Execution Status': []})
 
         df = pd.DataFrame(processed_issues)
         df["Issue Key"] = df["Issue Key"].apply(lambda x: make_clickable(x, self.base_url))
         df["Test Case"] = df["Test Case"].apply(lambda x: make_testcase_clickable(x, self.base_url, self.project))
-        df = df.groupby(['Issue Key', 'Issue Status']).agg({
+        df = df.groupby(['Issue Key', 'Issue Status'], as_index=False).agg({
             'Test Case': lambda x: ', '.join(x.sort_values()) if len(x) > 0 else 'No Test Cases',
             'Status': lambda x: (x == 'Approved').sum() / len(x),
             'Execution Status': lambda x: (x == 'Pass').sum() / len(x)
         })
-        df = df.sort_values(by=['Execution Status'], ascending=False).reset_index()
-        df.loc['Total'] = df.mean(numeric_only=True, axis=0)
-        df.loc['Total'] = df.loc['Total'].replace(np.nan, '', regex=True)
-
-        df['Status'] = df['Status'].apply(lambda x: f"{x:.1%}")
-        df['Execution Status'] = df['Execution Status'].apply(lambda x: f"{x:.1%}")
+        df = df.sort_values(by=['Execution Status'], ascending=False).reset_index(drop=True)
 
         on_finish("Done")
 
@@ -276,11 +266,17 @@ class ZephyrSprintReportPlugin(Plugin):
         )
 
         if self.test_cycle_details is None:
-            return "No test cycle linked to sprint report"
+            return "No sprint report linked (via web links) to test cycle. Add the sprint report url to the test cycle links to link items."
+
+        df = self.test_cycle_test_cases_data_table
+        df.loc['Total'] = df.mean(numeric_only=True, axis=0)
+        df.loc['Total'] = df.loc['Total'].replace(np.nan, '', regex=True)
+        df['Status'] = df['Status'].apply(lambda x: f"{x:.1%}")
+        df['Execution Status'] = df['Execution Status'].apply(lambda x: f"{x:.1%}")
 
         return template.substitute(
-            test_cycle_details=self.test_cycle_details.to_html(escape=False).replace("NaN", "-"),
-            test_cycle_data_table=self.test_cycle_test_cases_data_table.to_html(escape=False).replace("NaN", "-")
+            test_cycle_details= self.test_cycle_details.to_html(escape=False).replace("NaN", "-"),
+            test_cycle_data_table= df.to_html(escape=False).replace("NaN", "-")
         )
 
     def show_test_case_statistics(self):
@@ -294,8 +290,14 @@ class ZephyrSprintReportPlugin(Plugin):
         if self.test_case_statistics_data_table is None:
             return ""
 
+        df = self.test_case_statistics_data_table
+        df.loc['Total'] = df.mean(numeric_only=True, axis=0)
+        df.loc['Total'] = df.loc['Total'].replace(np.nan, '', regex=True)
+        df['Status'] = df['Status'].apply(lambda x: f"{x:.1%}")
+        df['Execution Status'] = df['Execution Status'].apply(lambda x: f"{x:.1%}")
+
         return template.substitute(
-            test_case_statistics_data_table=self.test_case_statistics_data_table.to_html(escape=False).replace("NaN", "-")
+            test_case_statistics_data_table= df.to_html(escape=False).replace("NaN", "-")
         )
 
     def show_report(self):
