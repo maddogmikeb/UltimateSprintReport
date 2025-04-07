@@ -169,6 +169,8 @@ class UltimateJiraSprintReport:
 
         def on_iteration(text):
             # self.progress_bar.update(1)
+            if self.progress_bar.n == self.progress_bar.total:
+                self.progress_bar.n = self.progress_bar.total + 0.00001
             self.progress_bar.set_postfix_str(text)
             self.progress_bar.refresh()
 

@@ -37,6 +37,7 @@
         "scopechangeburndownchart",
         "setuptools",
         "sprintreport",
+        "testcycle",
         "testcycles",
         "testexecutions",
         "tqdm",

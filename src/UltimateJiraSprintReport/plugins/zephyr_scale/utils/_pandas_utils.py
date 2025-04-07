@@ -9,3 +9,9 @@ def make_testcase_clickable(val: str, base_url: str, project: str):
         return val
 
     return f'<a target="_blank" href="{base_url}/projects/{project}?selectedItem={TEST_APP}#!/v2/testCase/{val}">{val}</a>'
+
+def make_testcycle_clickable(val: str, base_url: str, project: str):
+    if len(val) == 0:
+        return val
+
+    return f'<a target="_blank" href="{base_url}/projects/{project}?selectedItem={TEST_APP}#!/v2/testCycle/{val}">{val}</a>'

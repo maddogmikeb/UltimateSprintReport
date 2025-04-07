@@ -6,12 +6,14 @@
 
 from collections.abc import Callable
 from string import Template
-from tqdm.auto import tqdm
 import warnings
+
+from tqdm.auto import tqdm
 
 from UltimateJiraSprintReport.plugins.plugin_register import Plugin
 from UltimateJiraSprintReport.plugins.zephyr_scale.services.zephyr_scale_api_service import ZephyrScaleApiService
-from UltimateJiraSprintReport.plugins.zephyr_scale.utils._pandas_utils import make_testcase_clickable
+from UltimateJiraSprintReport.plugins.zephyr_scale.utils._pandas_utils import make_testcase_clickable,\
+    make_testcycle_clickable
 from UltimateJiraSprintReport.services._jira_service import JiraService
 from UltimateJiraSprintReport.utils._pandas_utils import make_clickable
 import numpy as np
@@ -74,6 +76,22 @@ class ZephyrSprintReportPlugin(Plugin):
             on_finish=on_finish
         )
 
+        if self.test_case_statistics_data_table is not None and self.test_cycle_test_cases_data_table is not None:
+            # merge the test_case_statistics_data_table and the test_cycle and identify the duplicates
+            not_in_cycle = pd.merge(
+                self.test_case_statistics_data_table,
+                self.test_cycle_test_cases_data_table,
+                how='outer',
+                indicator=True
+            ).query('_merge=="left_only"').drop('_merge', axis=1)
+
+            not_in_cycle['Issue Key'] = "*" + not_in_cycle['Issue Key']
+
+            df = pd.concat([not_in_cycle, self.test_cycle_test_cases_data_table]).reset_index(drop=True)
+
+            self.test_case_statistics_data_table = None # we dont need this anymore
+            self.test_cycle_test_cases_data_table = df
+
         self.progress_bar.n = self.progress_bar.total
         self.progress_bar.refresh()
         self.progress_bar.set_postfix_str("Completed")
@@ -121,6 +139,8 @@ class ZephyrSprintReportPlugin(Plugin):
             if 'testCase' in test_execution and 'self' in test_execution['testCase']:
                 test_case = self.zephyr_service.get_test_case(test_execution['testCase']['self'])
 
+                test_case['status'] = self.zephyr_service.get_test_case_status(test_case['status']['self'])
+
                 lastExec = self.zephyr_service.get_test_case_latest_executions(test_case['key'])
                 if lastExec and 'values' in lastExec and len(lastExec['values']) == 1:
                     test_case['lastExecution'] = lastExec['values'][0]
@@ -130,13 +150,20 @@ class ZephyrSprintReportPlugin(Plugin):
                 else:
                     test_case['lastExecution'] = None
 
+                issues = []
+                if 'links' in test_cycle and 'issues' in test_case['links']:
+                    for link in test_case['links']['issues']:
+                        if 'issueId' in link:
+                            issues.append(self.jira_service.get_issue(link['issueId']))
+
+                test_case['issues'] = issues
+
                 test_cases.append(test_case)
 
         on_finish("Completed checking test cycles")
 
         test_cycle_df = pd.DataFrame([{
-            "Id": test_cycle['id'],
-            "Key": test_cycle['key'],
+            "Key": make_testcycle_clickable(test_cycle['key'], self.base_url, self.project) ,
             "Name": test_cycle['name'],
             "Project": test_cycle['project']['key'],
             "Status": test_cycle['status']['name'],
@@ -144,11 +171,31 @@ class ZephyrSprintReportPlugin(Plugin):
             "Description": test_cycle['description'],
             "Start": test_cycle['plannedStartDate'],
             "End": test_cycle['plannedEndDate'],
-        }])
+        }]).T
 
-        test_cases_df = pd.DataFrame(test_cases)
+        df = pd.DataFrame([{
+            "Issue Key": tc['issues'][0]['key'] if len(tc['issues']) == 1 else "Unknown",
+            "Test Case": tc['key'],
+            "Issue Status": tc['issues'][0]['fields']['status']['name'] if len(tc['issues']) == 1 else "Unknown",
+            "Status": tc['status']['name'],
+            "Execution Status": tc['lastExecution']['testExecutionStatus']['name']
+        } for tc in test_cases])
 
-        return test_cycle_df.T, test_cases_df
+        df["Issue Key"] = df["Issue Key"].apply(lambda x: make_clickable(x, self.base_url))
+        df["Test Case"] = df["Test Case"].apply(lambda x: make_testcase_clickable(x, self.base_url, self.project))
+        df = df.groupby(['Issue Key', 'Issue Status']).agg({
+            'Test Case': lambda x: ', '.join(x.sort_values()) if len(x) > 0 else 'No Test Cases',
+            'Status': lambda x: (x == 'Approved').sum() / len(x),
+            'Execution Status': lambda x: (x == 'Pass').sum() / len(x)
+        })
+        df = df.sort_values(by=['Execution Status'], ascending=False).reset_index()
+        df.loc['Total'] = df.mean(numeric_only=True, axis=0)
+        df.loc['Total'] = df.loc['Total'].replace(np.nan, '', regex=True)
+
+        df['Status'] = df['Status'].apply(lambda x: f"{x:.1%}")
+        df['Execution Status'] = df['Execution Status'].apply(lambda x: f"{x:.1%}")
+
+        return test_cycle_df, df
 
     def process_issues(
             self,
@@ -202,7 +249,7 @@ class ZephyrSprintReportPlugin(Plugin):
         df["Issue Key"] = df["Issue Key"].apply(lambda x: make_clickable(x, self.base_url))
         df["Test Case"] = df["Test Case"].apply(lambda x: make_testcase_clickable(x, self.base_url, self.project))
         df = df.groupby(['Issue Key', 'Issue Status']).agg({
-            'Test Case': lambda x: ', '.join(x) if len(x) > 0 else 'No Test Cases',
+            'Test Case': lambda x: ', '.join(x.sort_values()) if len(x) > 0 else 'No Test Cases',
             'Status': lambda x: (x == 'Approved').sum() / len(x),
             'Execution Status': lambda x: (x == 'Pass').sum() / len(x)
         })
@@ -231,8 +278,8 @@ class ZephyrSprintReportPlugin(Plugin):
             return "No test cycle linked to sprint report"
 
         return template.substitute(
-            test_cycle_details = self.test_cycle_details.to_html(escape=False).replace("NaN", "-"),
-            test_cycle_data_table = self.test_cycle_test_cases_data_table.to_html(escape=False).replace("NaN", "-")
+            test_cycle_details=self.test_cycle_details.to_html(escape=False).replace("NaN", "-"),
+            test_cycle_data_table=self.test_cycle_test_cases_data_table.to_html(escape=False).replace("NaN", "-")
         )
 
     def show_test_case_statistics(self):
@@ -243,8 +290,11 @@ class ZephyrSprintReportPlugin(Plugin):
             """
         )
 
+        if self.test_case_statistics_data_table is None:
+            return ""
+
         return template.substitute(
-            test_case_statistics_data_table = self.test_case_statistics_data_table.to_html(escape=False).replace("NaN", "-")
+            test_case_statistics_data_table=self.test_case_statistics_data_table.to_html(escape=False).replace("NaN", "-")
         )
 
     def show_report(self):
@@ -263,6 +313,6 @@ class ZephyrSprintReportPlugin(Plugin):
         )
 
         return template.substitute(
-            test_case_statistics = self.show_test_case_statistics(),
-            test_cycle_statistics = self.show_test_cycle_statistics()
+            test_case_statistics=self.show_test_case_statistics(),
+            test_cycle_statistics=self.show_test_cycle_statistics()
         )

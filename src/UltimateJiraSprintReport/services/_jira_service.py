@@ -82,12 +82,13 @@ class JiraService:
 
         issue = self.check_cache(
             f"key:{key} fields:{fields}",
-            lambda: self.jira.issue(key=key, fields=fields)
+            lambda: self.jira.get_issue(issue_id_or_key=key, fields=fields if fields != "*all" else None)
         )
 
-        # store it as id as well
+        # store it as id and key
         i = deepcopy(issue)
         self.check_cache(f"key:{issue['key']} fields:*all", lambda i=i: i)
+        self.check_cache(f"key:{issue['id']} fields:*all", lambda i=i: i)
 
         return issue
 
