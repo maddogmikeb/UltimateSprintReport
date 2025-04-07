@@ -270,6 +270,7 @@ class ZephyrSprintReportPlugin(Plugin):
             <h2>Sprint Test Cycle Details</h2>
             ${test_cycle_details}
             <h3>Sprint Test Cycle - Test Cases</h3>
+            Note: * indicates tests executed on issues within sprint but not added to test cycle.
             ${test_cycle_data_table}
             """
         )
@@ -302,11 +303,11 @@ class ZephyrSprintReportPlugin(Plugin):
         template = Template(
             """
             <table>
-                <tr>
-                    <td>${test_case_statistics}</td>
-                </tr>
                <tr>
                     <td>${test_cycle_statistics}</td>
+                </tr>
+                <tr>
+                    <td>${test_case_statistics}</td>
                 </tr>
              </table>
             """
