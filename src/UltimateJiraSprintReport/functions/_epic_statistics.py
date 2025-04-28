@@ -3,9 +3,9 @@
 # pylint: disable=too-many-positional-arguments, too-many-arguments
 
 from collections.abc import Callable
+import numpy as np
 
 from ..services._jira_service import JiraService
-
 
 def calculate_epic_statistics(
         jira_service: JiraService,
@@ -74,10 +74,10 @@ def calculate_epic_statistics(
                 ),
                 "done_pts": done_pts,
                 "total_pts": total_pts,
-                "completed_pts_perc": done_pts / total_pts * 100,
+                "completed_pts_perc": (done_pts / total_pts) * 100 if total_pts > 0 else np.nan,
                 "done_cnt": done_cnt,
                 "total_cnt": total_cnt,
-                "completed_cnt_perc": done_cnt / total_cnt * 100,
+                "completed_cnt_perc": (done_cnt / total_cnt) * 100 if total_cnt > 0 else np.nan,
             }
         )
 

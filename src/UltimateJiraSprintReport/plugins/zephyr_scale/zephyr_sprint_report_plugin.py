@@ -205,26 +205,23 @@ class ZephyrSprintReportPlugin(Plugin):
 
         def process_issue(issue):
             sprint_test_results = []
-            try:
-                issue_testcases = self.zephyr_service.get_test_cases(issue['key'])
-                for tc in issue_testcases:
-                    testcase = self.zephyr_service.get_test_case(tc['self'])
-                    status = self.zephyr_service.get_test_case_status(testcase['status']['self'])
-                    executions = self.zephyr_service.get_test_case_latest_executions(testcase['key'])
-                    if executions['values']:
-                        execution_status = self.zephyr_service.get_test_case_execution_status(executions['values'][0]['testExecutionStatus']['self'])
-                    else:
-                        execution_status = {'name': 'Not Executed'}
-                    sprint_test_results.append({
-                        "Issue Key": issue['key'],
-                        "Issue Status": issue['fields']['status']['name'],
-                        "Test Case": testcase['key'],
-                        "Status": status['name'],
-                        "Execution Status": execution_status['name']
-                    })
-                    on_iteration(f"issue={issue['key']}, testcase={testcase['key']}")
-            except Exception as ex:  # pylint: disable=broad-exception-caught
-                print(ex)
+            issue_testcases = self.zephyr_service.get_test_cases(issue['key'])
+            for tc in issue_testcases:
+                testcase = self.zephyr_service.get_test_case(tc['self'])
+                status = self.zephyr_service.get_test_case_status(testcase['status']['self'])
+                executions = self.zephyr_service.get_test_case_latest_executions(testcase['key'])
+                if executions['values']:
+                    execution_status = self.zephyr_service.get_test_case_execution_status(executions['values'][0]['testExecutionStatus']['self'])
+                else:
+                    execution_status = {'name': 'Not Executed'}
+                sprint_test_results.append({
+                    "Issue Key": issue['key'],
+                    "Issue Status": issue['fields']['status']['name'],
+                    "Test Case": testcase['key'],
+                    "Status": status['name'],
+                    "Execution Status": execution_status['name']
+                })
+                on_iteration(f"issue={issue['key']}, testcase={testcase['key']}")
 
             return sprint_test_results
 

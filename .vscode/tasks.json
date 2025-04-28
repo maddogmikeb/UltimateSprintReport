@@ -1,0 +1,54 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "-m", 
+                "build"
+            ],
+            "group": {
+              "kind": "build",
+              "isDefault": true
+            },
+            "presentation": {
+              "focus": true,
+              "reveal": "always",
+              "panel": "shared"
+            },
+            "options": {
+              "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "pyclean",
+            "args": [
+                "${workspaceFolder}/src"
+            ],
+            "group": {
+              "kind": "build",
+              "isDefault": true
+            },
+            "presentation": {
+              "focus": true,
+              "reveal": "always",
+              "panel": "shared"
+            },
+            "options": {
+              "cwd": "${workspaceFolder}"
+            } 
+        },
+        {
+            "label": "build & clean",
+            "dependsOrder": "sequence",
+            "dependsOn": ["clean", "build"]
+        }
+    ]
+}
