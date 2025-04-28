@@ -9,20 +9,20 @@
             "type": "shell",
             "command": "${command:python.interpreterPath}",
             "args": [
-                "-m", 
+                "-m",
                 "build"
             ],
             "group": {
-              "kind": "build",
-              "isDefault": true
+                "kind": "build",
+                "isDefault": true
             },
             "presentation": {
-              "focus": true,
-              "reveal": "always",
-              "panel": "shared"
+                "focus": true,
+                "reveal": "always",
+                "panel": "shared"
             },
             "options": {
-              "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}"
             }
         },
         {
@@ -33,22 +33,26 @@
                 "${workspaceFolder}/src"
             ],
             "group": {
-              "kind": "build",
-              "isDefault": true
+                "kind": "build",
+                "isDefault": true
             },
             "presentation": {
-              "focus": true,
-              "reveal": "always",
-              "panel": "shared"
+                "focus": true,
+                "reveal": "always",
+                "panel": "shared"
             },
             "options": {
-              "cwd": "${workspaceFolder}"
-            } 
+                "cwd": "${workspaceFolder}"
+            }
         },
         {
             "label": "build & clean",
             "dependsOrder": "sequence",
-            "dependsOn": ["clean", "build"]
+            "dependsOn": [
+                "clean",
+                "build"
+            ],
+            "problemMatcher": []
         }
     ]
 }
