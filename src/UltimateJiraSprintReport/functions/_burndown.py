@@ -211,7 +211,7 @@ def load_burndown(
                         }
                     )
                 elif "added" in change and change["added"] is True:
-                    added_after_sprint = True 
+                    added_after_sprint = True
                     for ts2, change_list_2 in sorted(
                         scope_change_burndown_chart["changes"].items(), key=lambda x: x
                     ):
@@ -225,8 +225,7 @@ def load_burndown(
                                         if "statC" in change2 and "newValue" in change2["statC"]
                                         else np.nan
                                     )
-
-                    if added_after_sprint:
+                    if not added_after_sprint:
                         scope.append(
                             {
                                 "timestamp": timestamp,
