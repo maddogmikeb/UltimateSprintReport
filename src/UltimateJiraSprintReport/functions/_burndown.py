@@ -143,15 +143,27 @@ def load_burndown(
                             elif not np.isnan(statistic):
                                 item["statistic"] += float(statistic)
                 else:
-                    scope.append(
-                        {
-                            "timestamp": sprint_start,
-                            "key": change["key"],
-                            "eventType": "Sprint start",
-                            "eventDetail": "",
-                            "statistic": float(statistic),
-                        }
-                    )
+                    added_after_sprint = False 
+                    for ts2, change_list_2 in sorted(
+                        scope_change_burndown_chart["changes"].items(), key=lambda x: x
+                    ):
+                        timestamp2 = int(ts2)
+                        for change2 in change_list_2:
+                            if timestamp2 > sprint_start:
+                                if change2["key"] == change["key"] and "added" in change2 and change2["added"] is True:
+                                    added_after_sprint = True
+
+                    if not added_after_sprint:
+                        scope.append(
+                            {
+                                "timestamp": sprint_start,
+                                "key": change["key"],
+                                "eventType": "Sprint start",
+                                "eventDetail": "",
+                                "statistic": float(statistic),
+                            }
+                        )
+
             elif (complete_time and timestamp <= complete_time) or (
                 now and timestamp <= now
             ):

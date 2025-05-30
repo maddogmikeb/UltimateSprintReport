@@ -29,16 +29,18 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
 
     def test_load(self):
         project = 'FDSEWMSR'
-        board_id = 401
-        sprint_id = 953
+        board_id = 364
+        sprint_id = 1963
         self.report.load(project, board_id, sprint_id)
         self.assertIsInstance(self.report.burndown_table, pd.DataFrame)
         self.assertIsInstance(self.report.burndown_chart, str)
+        with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+            print(self.report.burndown_table)
 
     def test_show_report(self):
         project = 'FDSEWMSR'
-        board_id = 401
-        sprint_id = 953
+        board_id = 364
+        sprint_id = 1963
         self.report.load(project, board_id, sprint_id)
         output = self.report.show_report()
         self.assertIsInstance(output, str)
