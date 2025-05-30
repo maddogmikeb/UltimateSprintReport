@@ -218,7 +218,7 @@ def load_burndown(
                         timestamp2 = int(ts2)
                         for change2 in change_list_2:
                             if timestamp2 < sprint_start:
-                                if change2["key"] == change["key"] and "added" in change2 and change2["added"] is True:
+                                if change2["key"] == change["key"]:
                                     added_after_sprint = False
                                     statistic = (
                                         change2["statC"]["newValue"]
