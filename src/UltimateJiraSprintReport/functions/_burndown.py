@@ -211,7 +211,17 @@ def load_burndown(
                         }
                     )
                 elif "added" in change and change["added"] is True:
-                    if change["key"] in [x["key"] for x in scope]:
+                    added_after_sprint = True 
+                    for ts2, change_list_2 in sorted(
+                        scope_change_burndown_chart["changes"].items(), key=lambda x: x
+                    ):
+                        timestamp2 = int(ts2)
+                        for change2 in change_list_2:
+                            if timestamp2 < sprint_start:
+                                if change2["key"] == change["key"] and "added" in change2 and change2["added"] is True:
+                                    added_after_sprint = False
+
+                    if added_after_sprint: 
                         scope.append(
                             {
                                 "timestamp": timestamp,
