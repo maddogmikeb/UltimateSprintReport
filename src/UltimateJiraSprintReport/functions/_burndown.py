@@ -211,15 +211,26 @@ def load_burndown(
                         }
                     )
                 elif "added" in change and change["added"] is True:
-                    scope.append(
-                        {
-                            "timestamp": timestamp,
-                            "key": change["key"],
-                            "eventType": "Scope change",
-                            "eventDetail": "Issue added to sprint",
-                            "statistic": np.nan,
-                        }
-                    )
+                    if change["key"] in [x["key"] for x in scope]:
+                        scope.append(
+                            {
+                                "timestamp": timestamp,
+                                "key": change["key"],
+                                "eventType": "Scope change",
+                                "eventDetail": "Issue added to sprint",
+                                "statistic": statistic,
+                            }
+                        )
+                    else:
+                        scope.append(
+                            {
+                                "timestamp": timestamp,
+                                "key": change["key"],
+                                "eventType": "Scope change",
+                                "eventDetail": "Issue added to sprint",
+                                "statistic": np.nan,
+                            }
+                        )
                 elif "statC" in change and "newValue" in change["statC"]:
                     statistic = (
                         change["statC"]["newValue"]
