@@ -220,8 +220,13 @@ def load_burndown(
                             if timestamp2 < sprint_start:
                                 if change2["key"] == change["key"] and "added" in change2 and change2["added"] is True:
                                     added_after_sprint = False
+                                    statistic = (
+                                        change2["statC"]["newValue"]
+                                        if "statC" in change2 and "newValue" in change2["statC"]
+                                        else np.nan
+                                    )
 
-                    if added_after_sprint: 
+                    if added_after_sprint:
                         scope.append(
                             {
                                 "timestamp": timestamp,
