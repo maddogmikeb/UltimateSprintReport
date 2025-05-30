@@ -75,7 +75,8 @@ def calculate_epic_statistics(
                         ),
                         "parent_summary":(
                             epic["fields"]["parent"]["fields"]["summary"]
-                            if "parent" in epic["fields"] and "fields" in epic["fields"]["parent"] and "summary" in epic["fields"]["parent"]["fields"] 
+                            if ("parent" in epic["fields"] and "fields" in epic["fields"]["parent"]
+                                and "summary" in epic["fields"]["parent"]["fields"])
                             else None
                         ),
                         "key": epic["key"],

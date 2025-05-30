@@ -156,7 +156,7 @@ def load_sprint_statistics(
 
     if sprint_velocity_statistics:
         total_committed = [
-            len(sprint_velocity_statistics["allConsideredIssueKeys"]),
+            len(sprint_velocity_statistics["estimatedEntries"]),
             sprint_velocity_statistics["estimated"].get("value", 0),
         ]
     else:
