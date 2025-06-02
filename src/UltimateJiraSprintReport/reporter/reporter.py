@@ -12,3 +12,4 @@ from ._show_sprint_details import show_sprint_details  # pylint: disable=unused-
 from ._show_sprint_issue_types_statistics import show_sprint_issue_types_statistics  # pylint: disable=unused-import
 from ._show_sprint_predictability import show_sprint_predictability  # pylint: disable=unused-import
 from ._show_sprint_test_case_statistics import show_sprint_test_case_statistics  # pylint: disable=unused-import
+from ._show_sprint_status_table import show_sprint_status_table  # pylint: disable=unused-import

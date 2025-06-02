@@ -12,10 +12,9 @@ Classes:
 # pylint: disable=import-outside-toplevel, line-too-long, missing-function-docstring, invalid-name, too-many-instance-attributes, too-many-statements
 
 from collections.abc import Callable
+from typing import Self
 
 from tqdm.auto import tqdm
-
-import pandas as pd
 
 from .plugins.plugin import Plugin
 from .plugins.plugin_register import get_plugin
@@ -64,13 +63,14 @@ class UltimateJiraSprintReport:
             self.this_sprint_predictability,
             self.predictability_data,
             self.epic_statistics,
-            self.velocity_statistics
+            self.velocity_statistics,
+            self.sprint_status_table
         ) = (None, None, None, None, None,
              None, None, None, None, None,
              None, None, None, None, None,
              None, None, None, None, None,
              None, None, None, None, None,
-             None, None, None, None
+             None, None, None, None, None
             )
 
         self.jira_service = JiraService(username, password, jira_scheme_url)
@@ -106,13 +106,14 @@ class UltimateJiraSprintReport:
             self.this_sprint_predictability,
             self.predictability_data,
             self.epic_statistics,
-            self.velocity_statistics
+            self.velocity_statistics,
+            self.sprint_status_table
         ) = (None, None, None, None, None,
              None, None, None, None, None,
              None, None, None, None, None,
              None, None, None, None, None,
              None, None, None, None, None,
-             None, None, None
+             None, None, None, None
             )
 
     from .reporter.reporter import (
@@ -127,15 +128,16 @@ class UltimateJiraSprintReport:
         show_login_details,  # pylint: disable=unused-import
         show_sprint_details,  # pylint: disable=unused-import
         show_sprint_issue_types_statistics,  # pylint: disable=unused-import
-        show_sprint_test_case_statistics  # pylint: disable=unused-import
+        show_sprint_test_case_statistics,  # pylint: disable=unused-import
+        show_sprint_status_table  # pylint: disable=unused-import
     )
 
-    def connect(self):
+    def connect(self) -> Self:
         self.jira_service.authenticate()
 
         return self
 
-    def is_connected(self):
+    def is_connected(self) -> bool:
 
         return self.jira_service.is_connected()
 
@@ -145,12 +147,12 @@ class UltimateJiraSprintReport:
 
         return plugin
 
-    def load(self, project: str, board_id: int, sprint_id: int):
+    def load(self, project: str, board_id: int, sprint_id: int) -> Self:
         sprint_url = f"{self.jira_service.host}jira/software/c/projects/{project}/boards/{board_id}/reports/sprint-retrospective?sprint={sprint_id}"
 
         return self.load_url(sprint_url)
 
-    def load_url(self, sprint_report_url: str):
+    def load_url(self, sprint_report_url: str) -> Self:
         """
         Load the sprint report data from the given URL.
 
@@ -187,62 +189,67 @@ class UltimateJiraSprintReport:
 
         self.progress_bar.set_postfix_str("Loading sprint details")
         self._set_sprint_details(sprint_report_url)
-        self.progress_bar.n = round((1 / 11) * 100, 2)
+        self.progress_bar.n = round((1 / 12) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading status categories")
         self._load_status_categories(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
-        self.progress_bar.n = round((2 / 11) * 100, 2)
+        self.progress_bar.n = round((2 / 12) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading sprint report")
         self._load_sprint_report(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
-        self.progress_bar.n = round((3 / 11) * 100, 2)
+        self.progress_bar.n = round((3 / 12) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading velocity statistics")
         self._load_velocity_statistics(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
-        self.progress_bar.n = round((4 / 11) * 100, 2)
+        self.progress_bar.n = round((4 / 12) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading board configuration")
         self._load_board_config(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
-        self.progress_bar.n = round((5 / 11) * 100, 2)
+        self.progress_bar.n = round((5 / 12) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading sprint statistics")
         self._load_sprint_statistics(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
-        self.progress_bar.n = round((6 / 11) * 100, 2)
+        self.progress_bar.n = round((6 / 12) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading sprint issue type statistics")
         self._load_sprint_issue_types_statistics(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
-        self.progress_bar.n = round((6.5 / 11) * 100, 2)
+        self.progress_bar.n = round((6.5 / 12) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading committed vs planned chart")
         self._load_committed_vs_planned_chart(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
-        self.progress_bar.n = round((7 / 11) * 100, 2)
+        self.progress_bar.n = round((7 / 12) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading sprint details")
         self._calculate_sprint_details(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
-        self.progress_bar.n = round((8 / 11) * 100, 2)
+        self.progress_bar.n = round((8 / 12) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading sprint predictability")
         self._calculate_sprint_predictability(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
-        self.progress_bar.n = round((9 / 11) * 100, 2)
+        self.progress_bar.n = round((9 / 12) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading epic statistics")
         self._calculate_epic_statistics(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
-        self.progress_bar.n = round((10 / 11) * 100, 2)
+        self.progress_bar.n = round((10 / 12) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.set_postfix_str("Loading burndown chart")
         self._load_burndown(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
-        self.progress_bar.n = round((11 / 11) * 100, 2)
+        self.progress_bar.n = round((11 / 12) * 100, 2)
+        self.progress_bar.refresh()
+
+        self.progress_bar.set_postfix_str("Loading status report")
+        self._load_status_report(on_start=on_start, on_iteration=on_iteration, on_finish=on_finish)
+        self.progress_bar.n = round((12 / 12) * 100, 2)
         self.progress_bar.refresh()
 
         self.progress_bar.n = self.progress_bar.total
@@ -252,7 +259,7 @@ class UltimateJiraSprintReport:
 
         return self
 
-    def _set_sprint_details(self, sprint_report_url: str):
+    def _set_sprint_details(self, sprint_report_url: str) -> Self:
         self.sprint_report_url = sprint_report_url
         self.base_url, self.project, self.rapid_view_id, self.sprint_id = parse_url(
             sprint_report_url
@@ -269,7 +276,7 @@ class UltimateJiraSprintReport:
             on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
             on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
             on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
-        ):
+        ) -> Self:
         on_start(None, "Loading Statuses")
         on_iteration("Loading Status Categories")
 
@@ -288,7 +295,7 @@ class UltimateJiraSprintReport:
             on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
             on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
             on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
-        ):
+        ) -> Self:
         on_start(None, "Loading Sprint Report")
         self.sprint_report = self.jira_service.get_sprint_report(
             self.rapid_view_id, self.sprint_id
@@ -303,7 +310,7 @@ class UltimateJiraSprintReport:
             on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
             on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
             on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
-        ):
+        ) -> Self:
         on_start(None, "Loading Velocity Statistics")
 
         self.velocity_statistics = self.jira_service.get_velocity_statistics(
@@ -328,7 +335,7 @@ class UltimateJiraSprintReport:
             on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
             on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
             on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
-        ):
+        ) -> Self:
         on_start(None, "Loading Board Config")
 
         self.board_config = self.jira_service.get_board_config(self.rapid_view_id)
@@ -349,7 +356,7 @@ class UltimateJiraSprintReport:
             on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
             on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
             on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
-        ):
+        ) -> Self:
         from .functions._sprint_details import load_sprint_statistics
 
         (
@@ -375,7 +382,7 @@ class UltimateJiraSprintReport:
             on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
             on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
             on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
-        ):
+        ) -> Self:
         from .functions._sprint_details import load_sprint_issue_types_statistics
 
         self.sprint_issue_types_statistics = load_sprint_issue_types_statistics(
@@ -392,7 +399,7 @@ class UltimateJiraSprintReport:
             on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
             on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
             on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
-        ):
+        ) -> Self:
         from .functions._sprint_details import load_committed_vs_planned_chart
 
         image_base64 = load_committed_vs_planned_chart(
@@ -416,7 +423,7 @@ class UltimateJiraSprintReport:
             on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
             on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
             on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
-        ):
+        ) -> Self:
         from .functions._sprint_details import calculate_sprint_details
 
         self.sprint_details = calculate_sprint_details(
@@ -434,7 +441,7 @@ class UltimateJiraSprintReport:
             on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
             on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
             on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
-        ):
+        ) -> Self:
         from .functions._predictability import calculate_predictability
 
         self.this_sprint_predictability, self.predictability_data = calculate_predictability(
@@ -454,7 +461,7 @@ class UltimateJiraSprintReport:
             on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
             on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
             on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
-        ) -> pd.DataFrame | str:
+        ) -> Self:
 
         from .functions._epic_statistics import calculate_epic_statistics
 
@@ -474,7 +481,7 @@ class UltimateJiraSprintReport:
             on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
             on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
             on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
-        ) -> pd.DataFrame | str:
+        ) -> Self:
 
         from .functions._burndown import load_burndown
 
@@ -489,5 +496,26 @@ class UltimateJiraSprintReport:
 
         self.burndown_table = df
         self.burndown_chart = f'<img id="burndown_chart" class="popupable" src="data:image/png;base64,{image_base64}" alt="Burndown Chart"/>'
+
+        return self
+
+    def _load_status_report(
+            self,
+            on_start: Callable[[float, str], None]=lambda _, __: "",  # pylint: disable=unused-argument
+            on_iteration: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+            on_finish: Callable[[str], None]=lambda _: "",  # pylint: disable=unused-argument
+        ) -> Self:
+
+        from .functions._status_report import load_sprint_status_table
+
+        df = load_sprint_status_table(
+            self.base_url,
+            self.sprint_report,
+            on_start,
+            on_iteration,
+            on_finish
+        )
+
+        self.sprint_status_table = df
 
         return self

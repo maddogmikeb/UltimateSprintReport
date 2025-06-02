@@ -6,6 +6,8 @@
 import os
 import sys
 import unittest
+import tempfile
+import webbrowser
 
 from UltimateJiraSprintReport import UltimateJiraSprintReport
 import pandas as pd
@@ -37,6 +39,19 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
         with pd.option_context('display.max_rows', None, 'display.max_columns', None):
             print(self.report.burndown_table)
 
+    def test_status_report_table(self):
+        project = 'FDSEWMSR'
+        board_id = 364
+        sprint_id = 1963
+        self.report.load(project, board_id, sprint_id)
+        self.assertIsInstance(self.report.burndown_table, pd.DataFrame)
+        self.assertIsInstance(self.report.burndown_chart, str)
+        html = str(self.report.show_sprint_status_table())
+        with tempfile.NamedTemporaryFile(suffix=".html", mode="w", delete=False) as temp_file:
+            temp_file.write(html)
+            temp_file_path = temp_file.name
+        webbrowser.open(temp_file_path)
+
     def test_show_report(self):
         project = 'FDSEWMSR'
         board_id = 364
@@ -44,6 +59,10 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
         self.report.load(project, board_id, sprint_id)
         output = self.report.show_report()
         self.assertIsInstance(output, str)
+        #with tempfile.NamedTemporaryFile(suffix=".html", mode="w", delete=False) as temp_file:
+        #    temp_file.write(output)
+        #    temp_file_path = temp_file.name
+        #webbrowser.open(temp_file_path)
 
 
 if __name__ == '__main__':
