@@ -46,7 +46,7 @@
             }
         },
         {
-            "label": "build & clean",
+            "label": "clean & build",
             "dependsOrder": "sequence",
             "dependsOn": [
                 "clean",
