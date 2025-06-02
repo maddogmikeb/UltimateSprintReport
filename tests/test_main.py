@@ -39,6 +39,8 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
         with pd.option_context('display.max_rows', None, 'display.max_columns', None):
             print(self.report.burndown_table)
 
+### Only during development
+""""
     def test_status_report_table(self):
         project = 'FDSEWMSR'
         board_id = 364
@@ -51,6 +53,7 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
             temp_file.write(html)
             temp_file_path = temp_file.name
         webbrowser.open(temp_file_path)
+""""
 
     def test_show_report(self):
         project = 'FDSEWMSR'
