@@ -86,11 +86,13 @@ report = UltimateJiraSprintReport()
 ## Example Output
 
 ### Burndown Chart
+
 The library generates a burndown chart to visualize sprint progress:
 
 ![Burndown Chart Example](docs/images/burndown_chart_example.png)
 
 ### Velocity Metrics
+
 Analyze team velocity and sprint predictability:
 
 | Sprint | Planned Points | Completed Points | Velocity (%) |
