@@ -514,7 +514,7 @@ class UltimateJiraSprintReport:
             on_start,
             on_iteration,
             on_finish
-        )
+        ) # pylint: disable=too-many-positional-arguments
 
         self.sprint_status_table = df
 

@@ -12,6 +12,7 @@ src/UltimateJiraSprintReport/functions/_burndown.py
 src/UltimateJiraSprintReport/functions/_epic_statistics.py
 src/UltimateJiraSprintReport/functions/_predictability.py
 src/UltimateJiraSprintReport/functions/_sprint_details.py
+src/UltimateJiraSprintReport/functions/_status_report.py
 src/UltimateJiraSprintReport/models/__init__.py
 src/UltimateJiraSprintReport/models/_data_point.py
 src/UltimateJiraSprintReport/plugins/__init__.py
@@ -35,6 +36,7 @@ src/UltimateJiraSprintReport/reporter/_show_report.py
 src/UltimateJiraSprintReport/reporter/_show_sprint_details.py
 src/UltimateJiraSprintReport/reporter/_show_sprint_issue_types_statistics.py
 src/UltimateJiraSprintReport/reporter/_show_sprint_predictability.py
+src/UltimateJiraSprintReport/reporter/_show_sprint_status_table.py
 src/UltimateJiraSprintReport/reporter/_show_sprint_test_case_statistics.py
 src/UltimateJiraSprintReport/reporter/reporter.py
 src/UltimateJiraSprintReport/services/__init__.py
