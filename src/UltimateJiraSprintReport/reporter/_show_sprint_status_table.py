@@ -21,14 +21,11 @@ def show_sprint_status_table(self):
                 --yellow: rgb(233, 242, 255); 
                 --green: rgb(220, 255, 241);
             }
-            .dataframe {
-                width: 100%;
-            }
         </style>
         <h2>Sprint Status</h2>
-        <span style='width: 100%; text-align: right;'>
+        <div style='width: 100%; text-align: right;'>
             * Issues added to sprint after start time
-        </span>
+        </div>
         ${html}
     """
     )
