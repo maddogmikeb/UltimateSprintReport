@@ -22,6 +22,9 @@ def show_burndown_table(self):
         """
     )
 
+    df = self.burndown_table
+    df.index = df.index + 1
+    
     return template.substitute(
-        table=self.burndown_table.to_html(escape=False).replace("NaN", "-")
+        table=df.to_html(escape=False).replace("NaN", "-")
     )

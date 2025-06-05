@@ -270,6 +270,7 @@ class ZephyrSprintReportPlugin(Plugin):
         df.loc['Total'] = df.loc['Total'].replace(np.nan, '', regex=True)
         df['Status'] = df['Status'].apply(lambda x: f"{x:.1%}")
         df['Execution Status'] = df['Execution Status'].apply(lambda x: f"{x:.1%}")
+        df.index = df.index + 1
 
         return template.substitute(
             test_cycle_details= self.test_cycle_details.to_html(escape=False).replace("NaN", "-"),
@@ -292,6 +293,7 @@ class ZephyrSprintReportPlugin(Plugin):
         df.loc['Total'] = df.loc['Total'].replace(np.nan, '', regex=True)
         df['Status'] = df['Status'].apply(lambda x: f"{x:.1%}")
         df['Execution Status'] = df['Execution Status'].apply(lambda x: f"{x:.1%}")
+        df.index = df.index + 1
 
         return template.substitute(
             test_case_statistics_data_table= df.to_html(escape=False).replace("NaN", "-")
