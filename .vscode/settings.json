@@ -28,6 +28,7 @@
         "numpy",
         "perc",
         "popupable",
+        "pycache",
         "pyclean",
         "pylint",
         "rapidviewconfig",
@@ -40,6 +41,7 @@
         "testexecutions",
         "tqdm",
         "twinx",
+        "venv",
         "vlines",
         "weekmask",
         "xticks",
@@ -60,4 +62,9 @@
     "python.autoComplete.extraPaths": ["${workspaceFolder}/src"],
     "python.analysis.diagnosticMode": "workspace",
     "python.languageServer": "Jedi",
+    "files.exclude": {
+        "**/*.pyc": { "when": "$(basename).py" },
+        "**/__pycache__/": true,
+        "**/*.egg-info/": true,
+    }
 }
