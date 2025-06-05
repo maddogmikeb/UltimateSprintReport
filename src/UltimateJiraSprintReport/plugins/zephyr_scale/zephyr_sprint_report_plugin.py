@@ -290,8 +290,14 @@ class ZephyrSprintReportPlugin(Plugin):
         df = self.test_case_statistics_data_table
         df.loc['Total'] = df.mean(numeric_only=True, axis=0)
         df.loc['Total'] = df.loc['Total'].replace(np.nan, '', regex=True)
-        df['Status'] = df['Status'].apply(lambda x: f"{x:.1%}")
-        df['Execution Status'] = df['Execution Status'].apply(lambda x: f"{x:.1%}")
+        try:
+            df['Status'] = df['Status'].apply(lambda x: f"{x:.1%}")
+        except: #pylint: disable=bare-except
+            pass
+        try:
+            df['Execution Status'] = df['Execution Status'].apply(lambda x: f"{x:.1%}")
+        except: #pylint: disable=bare-except
+            pass
         df.index = df.index + 1
 
         return template.substitute(
