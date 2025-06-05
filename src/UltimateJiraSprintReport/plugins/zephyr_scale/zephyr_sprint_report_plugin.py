@@ -298,8 +298,7 @@ class ZephyrSprintReportPlugin(Plugin):
             df['Execution Status'] = df['Execution Status'].apply(lambda x: f"{x:.1%}")
         except: #pylint: disable=bare-except
             pass
-        df.index = df.index + 1
-
+        
         return template.substitute(
             test_case_statistics_data_table= df.to_html(escape=False).replace("NaN", "-")
         )
