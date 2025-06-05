@@ -1,21 +1,14 @@
 # pylint: disable=protected-access, wrong-import-position, missing-class-docstring
 # pylint: disable=missing-function-docstring, missing-module-docstring
 # pylint: disable=import-error, import-outside-toplevel, wrong-import-order
-# pylint: disable=too-few-public-methods, too-many-arguments
+# pylint: disable=too-few-public-methods, too-many-arguments, line-too-long
 
 import os
-import sys
 import unittest
-import tempfile
-import webbrowser
-
-from UltimateJiraSprintReport import UltimateJiraSprintReport
 import pandas as pd
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-SRC_DIR = os.path.join(os.path.dirname(SCRIPT_DIR), "src")
-sys.path.append(SRC_DIR)
-
+from __testing__ import Testing
+from UltimateJiraSprintReport import UltimateJiraSprintReport
 
 class TestUltimateJiraSprintReport(unittest.TestCase):
 
@@ -36,34 +29,32 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
         self.report.load(project, board_id, sprint_id)
         self.assertIsInstance(self.report.burndown_table, pd.DataFrame)
         self.assertIsInstance(self.report.burndown_chart, str)
-        with pd.option_context('display.max_rows', None, 'display.max_columns', None):
-            print(self.report.burndown_table)
 
-### Only during development
-###    def test_status_report_table(self):
-###        project = 'FDSEWMSR'
-###        board_id = 364
-###        sprint_id = 1963
-###        self.report.load(project, board_id, sprint_id)
-###        self.assertIsInstance(self.report.burndown_table, pd.DataFrame)
-###        self.assertIsInstance(self.report.burndown_chart, str)
-###        html = str(self.report.show_sprint_status_table())
-###        with tempfile.NamedTemporaryFile(suffix=".html", mode="w", delete=False) as temp_file:
-###            temp_file.write(html)
-###            temp_file_path = temp_file.name
-###        webbrowser.open(temp_file_path)
+        if Testing.INTERACTIVE_TESTING_ENABLED:
+            with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+                print(self.report.burndown_table)
+
+    def test_status_report_table(self):
+        ### Only during development
+        if not Testing.INTERACTIVE_TESTING_ENABLED:
+            self.skipTest("Not testing interactive tests")
+        project = 'FDSEWMSR'
+        board_id = 364
+        sprint_id = 959
+        self.report.load(project, board_id, sprint_id)
+        Testing.write_to_temp_html_file_then_open( self.report.show_sprint_status_table() )
 
     def test_show_report(self):
+        ### Only during development
+        if not Testing.INTERACTIVE_TESTING_ENABLED:
+            self.skipTest("Not testing interactive tests")
         project = 'FDSEWMSR'
         board_id = 364
         sprint_id = 1963
         self.report.load(project, board_id, sprint_id)
         output = self.report.show_report()
         self.assertIsInstance(output, str)
-        #with tempfile.NamedTemporaryFile(suffix=".html", mode="w", delete=False) as temp_file:
-        #    temp_file.write(output)
-        #    temp_file_path = temp_file.name
-        #webbrowser.open(temp_file_path)
+        Testing.write_to_temp_html_file_then_open( output )
 
 
 if __name__ == '__main__':

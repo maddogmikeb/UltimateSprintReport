@@ -25,11 +25,16 @@ def load_sprint_status_table(
             "Type" : "Completed Issues",
             "Key": "<a href='" + base_url + "/browse/" + issue["key"] +"'>" + issue["key"] + "</a>" + ("*" if issue["key"] in sprint_report["contents"]["issueKeysAddedDuringSprint"] else ""),
             "Summary": issue["summary"],
-            "Issue Type": "<span><img style='height: 16px; width: 16px;' src='" + issue["typeUrl"] + "'>" + issue["typeName"] + "</span>",
-            "Priority": "<span><img  style='height: 16px; width: 16px;' src='" + issue["priorityUrl"] + "'>" + issue["priorityName"] + "</span>" if "priorityName" in issue else "",
-            "Status": "<span style='background-color: var(--" + issue["status"]["statusCategory"]["colorName"] + ");'>" + issue["status"]["name"] + "</span>",            "Estimate": issue["estimateStatistic"]["statFieldValue"]["value"] if "estimateStatistic" in issue and 
+            "Issue Type": "<img style='height: 16px; width: 16px;' src='" + issue["typeUrl"] + "' title='" + issue["typeName"] + "' />",
+            "Priority": "<img style='height: 16px; width: 16px;' src='" + issue["priorityUrl"] + "' title='" + issue["priorityName"] + " '/>" if "priorityName" in issue else "",            "Status": "<span style='background-color: var(--" + issue["status"]["statusCategory"]["colorName"] + ");'>" + issue["status"]["name"] + "</span>",            "Estimate": issue["estimateStatistic"]["statFieldValue"]["value"] if "estimateStatistic" in issue and 
                 "statFieldValue" in issue["estimateStatistic"] and 
-                "value" in issue["estimateStatistic"]["statFieldValue"] else np.nan
+                "value" in issue["estimateStatistic"]["statFieldValue"] else np.nan,
+            "Original Estimate": issue["estimateStatistic"]["statFieldValue"]["value"] if "estimateStatistic" in issue and 
+                "statFieldValue" in issue["estimateStatistic"] and 
+                "value" in issue["estimateStatistic"]["statFieldValue"] else np.nan,
+            "Current Estimate": issue["currentEstimateStatistic"]["statFieldValue"]["value"] if "estimateStatistic" in issue and 
+                "statFieldValue" in issue["currentEstimateStatistic"] and 
+                "value" in issue["currentEstimateStatistic"]["statFieldValue"] else np.nan
         })
 
     for issue in sprint_report["contents"]["issuesNotCompletedInCurrentSprint"]:
@@ -37,12 +42,14 @@ def load_sprint_status_table(
             "Type" : "Issues Not Completed",
             "Key": "<a href='" + base_url + "/browse/" + issue["key"] +"'>" + issue["key"] + "</a>" + ("*" if issue["key"] in sprint_report["contents"]["issueKeysAddedDuringSprint"] else ""),
             "Summary": issue["summary"],
-            "Issue Type": "<span><img style='height: 16px; width: 16px;' src='" + issue["typeUrl"] + "'>" + issue["typeName"] + "</span>",
-            "Priority": "<span><img style='height: 16px; width: 16px;' src='" + issue["priorityUrl"] + "'>" + issue["priorityName"] + "</span>" if "priorityName" in issue else "",
-            "Status": "<span style='background-color: var(--" + issue["status"]["statusCategory"]["colorName"] + ");'>" + issue["status"]["name"] + "</span>",
-            "Estimate": issue["estimateStatistic"]["statFieldValue"]["value"] if "estimateStatistic" in issue and 
+            "Issue Type": "<img style='height: 16px; width: 16px;' src='" + issue["typeUrl"] + "' title='" + issue["typeName"] + "' />",
+            "Priority": "<img style='height: 16px; width: 16px;' src='" + issue["priorityUrl"] + "' title='" + issue["priorityName"] + " '/>" if "priorityName" in issue else "",            "Status": "<span style='background-color: var(--" + issue["status"]["statusCategory"]["colorName"] + ");'>" + issue["status"]["name"] + "</span>",
+            "Original Estimate": issue["estimateStatistic"]["statFieldValue"]["value"] if "estimateStatistic" in issue and 
                 "statFieldValue" in issue["estimateStatistic"] and 
-                "value" in issue["estimateStatistic"]["statFieldValue"] else np.nan
+                "value" in issue["estimateStatistic"]["statFieldValue"] else np.nan,
+            "Current Estimate": issue["currentEstimateStatistic"]["statFieldValue"]["value"] if "estimateStatistic" in issue and 
+                "statFieldValue" in issue["currentEstimateStatistic"] and 
+                "value" in issue["currentEstimateStatistic"]["statFieldValue"] else np.nan
         })
 
     for issue in sprint_report["contents"]["issuesCompletedInAnotherSprint"]:
@@ -50,15 +57,40 @@ def load_sprint_status_table(
             "Type" : "Issues completed outside of this sprint",
             "Key": "<a href='" + base_url + "/browse/" + issue["key"] +"'>" + issue["key"] + "</a>" + ("*" if issue["key"] in sprint_report["contents"]["issueKeysAddedDuringSprint"] else ""),
             "Summary": issue["summary"],
-            "Issue Type": "<span><img style='height: 16px; width: 16px;' src='" + issue["typeUrl"] + "'>" + issue["typeName"] + "</span>",
-            "Priority": "<span><img style='height: 16px; width: 16px;' src='" + issue["priorityUrl"] + "'>" + issue["priorityName"] + "</span>" if "priorityName" in issue else "",
+            "Issue Type": "<img style='height: 16px; width: 16px;' src='" + issue["typeUrl"] + "' title='" + issue["typeName"] + "' />",
+            "Priority": "<img style='height: 16px; width: 16px;' src='" + issue["priorityUrl"] + "' title='" + issue["priorityName"] + " '/>" if "priorityName" in issue else "",
             "Status": "<span style='background-color: var(--" + issue["status"]["statusCategory"]["colorName"] + ");'>" + issue["status"]["name"] + "</span>",
-            "Estimate": issue["estimateStatistic"]["statFieldValue"]["value"] if "estimateStatistic" in issue and 
+            "Original Estimate": issue["estimateStatistic"]["statFieldValue"]["value"] if "estimateStatistic" in issue and 
                 "statFieldValue" in issue["estimateStatistic"] and 
-                "value" in issue["estimateStatistic"]["statFieldValue"] else np.nan
+                "value" in issue["estimateStatistic"]["statFieldValue"] else np.nan,
+            "Current Estimate": issue["currentEstimateStatistic"]["statFieldValue"]["value"] if "estimateStatistic" in issue and 
+                "statFieldValue" in issue["currentEstimateStatistic"] and 
+                "value" in issue["currentEstimateStatistic"]["statFieldValue"] else np.nan
+        })
+
+    for issue in sprint_report["contents"]["puntedIssues"]:
+        report.append({
+            "Type" : "Issues Removed From Sprint",
+            "Key": "<a href='" + base_url + "/browse/" + issue["key"] +"'>" + issue["key"] + "</a>" + ("*" if issue["key"] in sprint_report["contents"]["issueKeysAddedDuringSprint"] else ""),
+            "Summary": issue["summary"],
+            "Issue Type": "<img style='height: 16px; width: 16px;' src='" + issue["typeUrl"] + "' title='" + issue["typeName"] + "' />",
+            "Priority": "<img style='height: 16px; width: 16px;' src='" + issue["priorityUrl"] + "' title='" + issue["priorityName"] + " '/>" if "priorityName" in issue else "",
+            "Status": "<span style='background-color: var(--" + issue["status"]["statusCategory"]["colorName"] + ");'>" + issue["status"]["name"] + "</span>",
+            "Original Estimate": issue["estimateStatistic"]["statFieldValue"]["value"] if "estimateStatistic" in issue and 
+                "statFieldValue" in issue["estimateStatistic"] and 
+                "value" in issue["estimateStatistic"]["statFieldValue"] else np.nan,
+            "Current Estimate": issue["currentEstimateStatistic"]["statFieldValue"]["value"] if "estimateStatistic" in issue and 
+                "statFieldValue" in issue["currentEstimateStatistic"] and 
+                "value" in issue["currentEstimateStatistic"]["statFieldValue"] else np.nan
         })
 
     df = pd.DataFrame(report)
-    df = df.fillna("-").infer_objects()
+
+    def create_estimate_column(row):
+        original = str(row["Original Estimate"]) if pd.notna(row["Original Estimate"]) else "-"
+        current = str(row["Current Estimate"]) if pd.notna(row["Current Estimate"]) else "-"
+        return current if original == current else original + " → " + current
+
+    df['Estimate'] = df.apply(create_estimate_column, axis=1)
 
     return df

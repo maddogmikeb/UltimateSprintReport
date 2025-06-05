@@ -1,7 +1,4 @@
 {
-    "secrets.enabledFolders": [
-        "default"
-    ],
     "cSpell.words": [
         "Analysing",
         "apikey",
@@ -31,6 +28,7 @@
         "numpy",
         "perc",
         "popupable",
+        "pyclean",
         "pylint",
         "rapidviewconfig",
         "resolutiondate",
@@ -61,8 +59,5 @@
     "python.analysis.extraPaths": ["${workspaceFolder}/src","${workspaceFolder}/src/services"], 
     "python.autoComplete.extraPaths": ["${workspaceFolder}/src"],
     "python.analysis.diagnosticMode": "workspace",
-    "python.pydev.sortImportsOnFormat": "pydev:pep8",
-    "python.pydev.lint.pylint.args": "-d duplicate-code",
     "python.languageServer": "Jedi",
-    "secret-stack.promptToScanBeforePush": "30days"
 }

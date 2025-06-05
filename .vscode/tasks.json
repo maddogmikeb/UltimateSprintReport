@@ -5,12 +5,58 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "install dev requirements",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
+            "command": "py -m pip install -r requirements-dev.txt",
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "presentation": {
+                "focus": true,
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "install requirements",
+            "type": "shell",
+            "command": "py -m pip install -r requirements.txt",
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "presentation": {
+                "focus": true,
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "install (all)",
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "install dev requirements",
+                "install requirements"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "pyclean",
             "args": [
-                "-m",
-                "build"
+                "${workspaceFolder}/src"
             ],
             "group": {
                 "kind": "build",
@@ -25,12 +71,13 @@
                 "cwd": "${workspaceFolder}"
             }
         },
-        {
-            "label": "clean",
+                {
+            "label": "build",
             "type": "shell",
-            "command": "pyclean",
+            "command": "${command:python.interpreterPath}",
             "args": [
-                "${workspaceFolder}/src"
+                "-m",
+                "build"
             ],
             "group": {
                 "kind": "build",

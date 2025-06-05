@@ -2,17 +2,12 @@
 # pylint: disable=wrong-import-order, line-too-long
 
 import os
-import sys
 import unittest
-
-from UltimateJiraSprintReport import UltimateJiraSprintReport
-from UltimateJiraSprintReport.plugins.zephyr_scale.zephyr_sprint_report_plugin import ZephyrSprintReportPlugin
 import pandas as pd
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-SRC_DIR = os.path.join(os.path.dirname(SCRIPT_DIR), "src")
-sys.path.append(SRC_DIR)
-
+from __testing__ import Testing
+from UltimateJiraSprintReport import UltimateJiraSprintReport
+from UltimateJiraSprintReport.plugins.zephyr_scale.zephyr_sprint_report_plugin import ZephyrSprintReportPlugin
 
 class TestPlugin(unittest.TestCase):
 
@@ -43,8 +38,8 @@ class TestPlugin(unittest.TestCase):
         output = zephyr_plugin.show_report()
         self.assertIsInstance(output, str)
 
-        with open("./tests/test-output.test_show_report.html", "w", encoding="utf-8") as f:
-            f.write(output)
+        if Testing.INTERACTIVE_TESTING_ENABLED:
+            Testing.write_to_temp_html_file_then_open(output)
 
     def test_test_cycles(self):
         project = 'FDSEWMSR'
