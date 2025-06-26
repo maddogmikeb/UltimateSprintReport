@@ -212,13 +212,14 @@ def load_burndown(
                     )
                 elif "added" in change and change["added"] is True:
                     added_after_sprint = True
+                    statistic = np.nan
                     for ts2, change_list_2 in sorted(
                         scope_change_burndown_chart["changes"].items(), key=lambda x: x
                     ):
                         timestamp2 = int(ts2)
                         for change2 in change_list_2:
                             if timestamp2 < sprint_start:
-                                if change2["key"] == change["key"]:
+                                if change2["key"] == change["key"] and np.isnan(statistic):
                                     added_after_sprint = False
                                     statistic = (
                                         change2["statC"]["newValue"]
