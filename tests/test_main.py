@@ -25,7 +25,7 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
     def test_load(self):
         project = 'FDSEWMSR'
         board_id = 364
-        sprint_id = 1963
+        sprint_id = 1965
         self.report.load(project, board_id, sprint_id)
         self.assertIsInstance(self.report.burndown_table, pd.DataFrame)
         self.assertIsInstance(self.report.burndown_chart, str)
@@ -40,7 +40,7 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
             self.skipTest("Not testing interactive tests")
         project = 'FDSEWMSR'
         board_id = 364
-        sprint_id = 959
+        sprint_id = 1965
         self.report.load(project, board_id, sprint_id)
         Testing.write_to_temp_html_file_then_open( self.report.show_sprint_status_table() )
 
@@ -50,7 +50,7 @@ class TestUltimateJiraSprintReport(unittest.TestCase):
             self.skipTest("Not testing interactive tests")
         project = 'FDSEWMSR'
         board_id = 364
-        sprint_id = 1963
+        sprint_id = 1965
         self.report.load(project, board_id, sprint_id)
         output = self.report.show_report()
         self.assertIsInstance(output, str)

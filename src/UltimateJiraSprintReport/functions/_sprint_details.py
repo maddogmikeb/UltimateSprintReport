@@ -181,8 +181,7 @@ def load_sprint_statistics(
 
     on_finish("Loaded Sprint Statistics")
 
-    return removed, done, completed_outside, in_progress, to_do, total_committed
-
+    return removed, to_do, in_progress, done, completed_outside, total_committed
 
 def calculate_sprint_details(
         board_config,

@@ -8,7 +8,7 @@ import webbrowser
 
 class Testing:
 
-    INTERACTIVE_TESTING_ENABLED = False
+    INTERACTIVE_TESTING_ENABLED = True
 
     @staticmethod
     def write_to_temp_html_file_then_open(html):
