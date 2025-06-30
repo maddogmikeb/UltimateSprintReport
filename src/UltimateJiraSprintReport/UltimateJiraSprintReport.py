@@ -12,6 +12,7 @@ Classes:
 # pylint: disable=import-outside-toplevel, line-too-long, missing-function-docstring, invalid-name, too-many-instance-attributes, too-many-statements
 
 from collections.abc import Callable
+from operator import itemgetter
 from typing import Self
 
 from tqdm.auto import tqdm
@@ -147,7 +148,20 @@ class UltimateJiraSprintReport:
 
         return plugin
 
-    def load(self, project: str, board_id: int, sprint_id: int) -> Self:
+    def load(self, **kwargs) -> Self:
+        project, board_id, sprint_id = itemgetter(
+            "project",
+            "board_id",
+            "sprint_id"
+        )(kwargs)
+
+        if project is None:
+            raise TypeError("'project' argument is missing")
+        if board_id is None:
+            raise TypeError("'board_id' argument is missing")
+        if sprint_id is None:
+            raise TypeError("'sprint_id' argument is missing")
+
         sprint_url = f"{self.jira_service.host}jira/software/c/projects/{project}/boards/{board_id}/reports/sprint-retrospective?sprint={sprint_id}"
 
         return self.load_url(sprint_url)
