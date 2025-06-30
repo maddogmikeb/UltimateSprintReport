@@ -28,14 +28,13 @@ def flatten(xss):
 
 class ZephyrSprintReportPlugin(Plugin):
 
-    def __init__(self, **kwargs):
-
-        jira_service, zephyr_api = itemgetter(
-            "jira_service",
-            "zephyr_api"
-        )(kwargs)
+    def __init__(self, jira_service: JiraService, **kwargs):
 
         super().__init__(jira_service)
+
+        zephyr_api = itemgetter(
+            "zephyr_api"
+        )(kwargs)
 
         if zephyr_api is None:
             raise TypeError("'zephyr_api' argument is missing")
