@@ -32,6 +32,15 @@ class Plugin():
             "sprint_id"
         )(kwargs)
 
+        if self.sprint_report_url is None:
+            if self.base_url is None and self.project is None and self.rapid_view_id is None and self.sprint_id is None:
+                raise TypeError("'sprint_report_url' argument is missing and cannot build based on other arguments")
+            elif not (self.base_url is None and self.project is None and self.rapid_view_id is None and self.sprint_id is None):
+                self.sprint_report_url = f"{self.base_url}jira/software/c/projects/{self.project}/boards/{self.rapid_view_id}/reports/sprint-retrospective?sprint={self.sprint_id}"
+
+        if self.sprint_report_url is None:
+            raise TypeError("'sprint_report_url' argument is missing")
+
         self._set_sprint_details( self.sprint_report_url )
 
         return self
