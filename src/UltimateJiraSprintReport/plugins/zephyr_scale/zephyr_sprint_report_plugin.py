@@ -36,6 +36,10 @@ class ZephyrSprintReportPlugin(Plugin):
         )(kwargs)
 
         super().__init__(jira_service)
+
+        if zephyr_api is None:
+            raise TypeError("'zephyr_api' argument is missing")
+
         self.zephyr_service = ZephyrScaleApiService(zephyr_api)
 
         (
