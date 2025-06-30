@@ -150,7 +150,7 @@ class UltimateJiraSprintReport:
         if plugin_name is None:
             raise TypeError("'plugin_name' argument missing")
 
-        plugin = get_plugin(plugin_name, self.jira_service, **kwargs)
+        plugin = get_plugin(**kwargs)
 
         return plugin
 
