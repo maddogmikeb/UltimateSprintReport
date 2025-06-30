@@ -143,7 +143,7 @@ class UltimateJiraSprintReport:
 
     def load_plugin(self, plugin_name, **kwargs) -> Plugin:
         plugin = get_plugin(plugin_name, self.jira_service, **kwargs)
-        plugin.load_url(self.sprint_report_url)
+        plugin.load(**kwargs)
 
         return plugin
 

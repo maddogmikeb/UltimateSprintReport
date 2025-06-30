@@ -4,9 +4,10 @@
 # pylint: disable=missing-function-docstring, invalid-name, missing-module-docstring, missing-class-docstring
 # pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
 
+from operator import itemgetter
+
 from UltimateJiraSprintReport.services._jira_service import JiraService
 from UltimateJiraSprintReport.utils._http_utils import parse_url
-
 
 class Plugin():
 
@@ -22,13 +23,16 @@ class Plugin():
         )
         self.jira_service = jira_service
 
-    def load_url(self, sprint_report_url: str):
-        self.sprint_report_url = sprint_report_url
-        self._set_sprint_details(sprint_report_url)
+    def load(self, **kwargs):
+        self.sprint_report_url, self.base_url, self.project, self.rapid_view_id, self.sprint_id = itemgetter(
+            "sprint_report_url",
+            "base_url",
+            "project",
+            "board_id",
+            "sprint_id"
+        )(kwargs)
 
-        return self
-
-    def load(self):
+        self._set_sprint_details( self.sprint_report_url )
 
         return self
 
