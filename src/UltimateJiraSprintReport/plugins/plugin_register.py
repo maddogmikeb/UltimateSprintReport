@@ -14,14 +14,9 @@ plugins = {
     "zephyr_scale": ZephyrSprintReportPlugin,
 }
 
-def get_plugin(**kwargs) -> Plugin:
+def get_plugin(plugin_name: str, jira_service: JiraService, **kwargs) -> Plugin:
     # # Very hacky way of plugins but only for so works for now
     # # be great to make this based on file location
-
-    plugin_name, jira_service = itemgetter(
-        "plugin_name",
-        "jira_service"
-    )(kwargs)
 
     if plugin_name is None:
         raise TypeError("'plugin_name' argument is missing")

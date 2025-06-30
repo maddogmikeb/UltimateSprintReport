@@ -11,14 +11,7 @@ from UltimateJiraSprintReport.utils._http_utils import parse_url
 
 class Plugin():
 
-    def __init__(self, **kwargs):
-        jira_service = itemgetter(
-            "jira_service"
-        )(kwargs)
-
-        if jira_service is None:
-            raise TypeError("'jira_service' argument is missing")
-
+    def __init__(self, jira_service: JiraService, **kwargs):
         (
             self.sprint_report_url,
             self.base_url,
