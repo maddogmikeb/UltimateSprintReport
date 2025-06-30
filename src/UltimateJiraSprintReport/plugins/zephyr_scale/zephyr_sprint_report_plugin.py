@@ -49,6 +49,8 @@ class ZephyrSprintReportPlugin(Plugin):
 
     def load(self, **kwargs):
 
+        super().load(**kwargs)
+
         self.progress_bar = tqdm(total=100, desc="Loading Test Case Details", leave=True)
         self.progress_bar.n = 0
         self.progress_bar.refresh()
