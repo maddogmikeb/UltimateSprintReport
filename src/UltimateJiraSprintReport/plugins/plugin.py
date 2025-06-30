@@ -24,13 +24,11 @@ class Plugin():
         self.jira_service = jira_service
 
     def load(self, **kwargs):
-        self.sprint_report_url, self.base_url, self.project, self.rapid_view_id, self.sprint_id = itemgetter(
-            "sprint_report_url",
-            "base_url",
-            "project",
-            "board_id",
-            "sprint_id"
-        )(kwargs)
+        self.sprint_report_url = kwargs.get("sprint_report_url")
+        self.base_url = kwargs.get("base_url")
+        self.project = kwargs.get("project")
+        self.rapid_view_id = kwargs.get("rapid_view_id")
+        self.sprint_id = kwargs.get("sprint_id")
 
         if self.sprint_report_url is None:
             if self.base_url is None and self.project is None and self.rapid_view_id is None and self.sprint_id is None:

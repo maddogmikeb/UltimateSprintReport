@@ -157,7 +157,7 @@ class UltimateJiraSprintReport:
     def load(self, **kwargs) -> Self:
         project, board_id, sprint_id = itemgetter(
             "project",
-            "board_id",
+            "board_i**d",
             "sprint_id"
         )(kwargs)
 
