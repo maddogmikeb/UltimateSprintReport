@@ -142,7 +142,14 @@ class UltimateJiraSprintReport:
 
         return self.jira_service.is_connected()
 
-    def load_plugin(self, plugin_name, **kwargs) -> Plugin:
+    def load_plugin(self, **kwargs) -> Plugin:
+        plugin_name = itemgetter(
+            "plugin_name"
+        )(kwargs)
+
+        if plugin_name is None:
+            raise TypeError("'plugin_name' argument missing")
+
         plugin = get_plugin(plugin_name, self.jira_service, **kwargs)
         plugin.load(**kwargs)
 
