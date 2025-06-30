@@ -27,7 +27,7 @@ class Plugin():
         self.sprint_report_url = kwargs.get("sprint_report_url")
         self.base_url = kwargs.get("base_url")
         self.project = kwargs.get("project")
-        self.rapid_view_id = kwargs.get("rapid_view_id")
+        self.rapid_view_id = kwargs.get("rapid_view_id", kwargs.get("board_id"))
         self.sprint_id = kwargs.get("sprint_id")
 
         if self.sprint_report_url is None:
