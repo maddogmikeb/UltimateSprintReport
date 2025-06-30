@@ -5,6 +5,7 @@
 # pylint: disable=too-many-instance-attributes, too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
 
 from collections.abc import Callable
+from operator import itemgetter
 from string import Template
 import warnings
 
@@ -27,7 +28,13 @@ def flatten(xss):
 
 class ZephyrSprintReportPlugin(Plugin):
 
-    def __init__(self, jira_service: JiraService, zephyr_api: str):
+    def __init__(self, **kwargs):
+
+        jira_service, zephyr_api = itemgetter(
+            "jira_service",
+            "zephyr_api"
+        )(kwargs)
+
         super().__init__(jira_service)
         self.zephyr_service = ZephyrScaleApiService(zephyr_api)
 
@@ -40,7 +47,7 @@ class ZephyrSprintReportPlugin(Plugin):
             None, None, None, None
         )
 
-    def load(self):
+    def load(self, **kwargs):
 
         self.progress_bar = tqdm(total=100, desc="Loading Test Case Details", leave=True)
         self.progress_bar.n = 0
